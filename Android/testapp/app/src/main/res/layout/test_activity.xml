@@ -1,0 +1,285 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/map_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/from_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="From"
+            android:textColor="?android:textColorSecondary" />
+
+        <EditText
+            android:id="@+id/from"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="Current Location"
+            android:editable="false"/>
+
+        <TextView
+            android:id="@+id/to_label"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="To"
+            android:textColor="?android:textColorSecondary" />
+
+        <AutoCompleteTextView
+            android:id="@+id/to"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:completionThreshold="3" />
+
+        <Button
+            android:id="@+id/directions_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="Directions"
+            android:onClick="displayDirections"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/directionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map_layout"
+        android:paddingLeft="16dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+         />
+
+    <Button
+        android:id="@+id/sendBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map_layout"
+        android:layout_alignParentRight="true"
+        android:paddingRight="16dp"
+        android:text="Send"
+        android:onClick="sendToGlove"
+        android:enabled="false"/>
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_below="@+id/sendBtn"
+        android:layout_width="match_parent"
+        android:layout_height="900px"
+        android:id="@+id/map"
+        tools:context=".MelodySmartTestActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        tools:layout="@layout/test_activity" />
+
+    <TextView
+        android:id="@+id/dataServiceLabel"
+        android:layout_below="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MelodySmart data service"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <EditText
+        android:layout_below="@+id/dataServiceLabel"
+        android:id="@+id/etDataToSend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Data to Send"
+        android:imeOptions="actionSend"
+        android:inputType="text" >
+        <requestFocus />
+    </EditText>
+    <EditText
+        android:id="@+id/etReceivedData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etDataToSend"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:enabled="false"
+        android:hint="Received Data" />
+
+    <TextView
+        android:id="@+id/batteryServiceLabel"
+        android:layout_below="@+id/etReceivedData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battery service"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <TextView
+        android:id="@+id/batteryView"
+        android:layout_below="@+id/batteryServiceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battery : N/A"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <Button
+        android:id="@+id/batteryButton"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/batteryView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+
+    <TextView
+        android:id="@+id/deviceInfoLabel"
+        android:layout_below="@+id/batteryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battery service"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <TextView
+        android:id="@+id/manufacturerNameView"
+        android:layout_below="@+id/deviceInfoLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manufacturer name: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/modelNumberView"
+        android:layout_below="@+id/manufacturerNameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Model number: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+
+    <TextView
+        android:id="@+id/serialNumberView"
+        android:layout_below="@+id/modelNumberView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Serial number: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/hwRevView"
+        android:layout_below="@+id/serialNumberView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HW rev: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/fwRevView"
+        android:layout_below="@+id/hwRevView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="FW rev: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/swRevView"
+        android:layout_below="@+id/fwRevView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SW rev: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/sysIdView"
+        android:layout_below="@+id/swRevView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="System id: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+    <TextView
+        android:id="@+id/pnpIdView"
+        android:layout_below="@+id/sysIdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PNP id: no info"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_marginTop="24dp"
+        android:layout_marginLeft="24dp"
+        />
+
+
+    <TextView
+        android:id="@+id/otaServiceLabel"
+        android:layout_below="@+id/pnpIdView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="OTA upgrade"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        />
+
+    <Button
+        android:id="@+id/otaButton"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/otaServiceLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upgrade firmware"/>
+
+
+</RelativeLayout>
+
+</ScrollView>

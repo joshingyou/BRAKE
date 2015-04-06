@@ -20,12 +20,12 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
-    <eraseonlaunchrule>1</eraseonlaunchrule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data xmlns="">
         <options />
@@ -119,12 +119,25 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Library\BLEMate2\connections.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Library\BLEMate2\SparkFun_BLEMate2.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Library\BLEMate2\SparkFun_BLEMate2.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="SensorGloves.cpp">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="SensorGloves.h">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Library" />
+    <Folder Include="Library\BLEMate2" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

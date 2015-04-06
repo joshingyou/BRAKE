@@ -11,61 +11,26 @@ output.
 ****************************************************************/
 
 #include <SparkFun_BLEMate2.h>
-#include <SoftwareSerial.h>
-
-
-#include <Adafruit_GFX.h>   // Core graphics library
-#include <RGBmatrixPanel.h> // Hardware-specific library
-
-
-#define CLK 11  // MUST be on PORTB! (Use pin 11 on Mega)
-#define OE  9
-#define LAT 12
-#define A   A0
-#define B   A1
-#define C   A2
-#define D   A3
-
-RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false);
 
 // You can also create a SoftwareSerial port object and pass that to the 
 //  BLEMate2 constructor; I don't recommend that because it's very possible
 //  for the amount of traffic coming from the BC118 to overwhelm the fairly
 //  shallow buffer of the SoftwareSerial object.
-BLEMate2 BTModu(&Serial1);
+BLEMate2 BTModu(&Serial);
 
 // This boolean determines whether we're going to do a central or peripheral
 //  example with this code.
 
 boolean central = true;
-int counter = 0;
-int i = 0;
-
 
 void setup()
 {
-  
-  matrix.begin();  
-  matrix.setCursor(7, 0);
-  matrix.setTextSize(1);
-  matrix.setTextColor(matrix.Color333(7, 7, 7));
-  
-  matrix.print("H");
-  matrix.print("I");
-  matrix.print("!");
-  
-   delay(3000);  
-            
-   matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-   delay(500);  
-  
   pinMode(2, OUTPUT);    // Control for the SmartBasic. If you look at the
                          //  bottom of the sketch, you'll see that I've added
                          //  functions called "selectBLE()" and "selectPC()" 
                          //  to make it a little more obvious when I switch
                          //  between serial devices.
-  Serial.begin(9600);    // This is the Serial-to-PC default baud rate.
-  Serial1.begin(9600);    // This is the BC118 default baud rate.
+  Serial.begin(9600);    // This is the BC118 default baud rate.
   selectBLE();           // Route serial data to the BC118.
 
   // Regarding function return values: most functions that interact with the
@@ -79,7 +44,7 @@ void setup()
   //                  This will probably only occur when you attempt to send
   //                  commands and parameters outside the built-ins. 
   //  SUCCESS - What it says.
-
+  
   // Reset is a blocking function which gives the BC118 a few seconds to reset.
   //  After a reset, the module will return to whatever settings are in
   //  non-volatile memory. One other *super* important thing it does is issue
@@ -129,11 +94,11 @@ void setup()
   //  The status command (STS) and the LEDs *will* lie to you and tell you that
   //  you are e.g. advertising or in central mode when in fact that is not the
   //  case and the module still needs to be reset before that is actually true.
-
+  
   // Okay, now we're unquestionably set to default settings. That means we're
   //  set up as a peripheral device, advertising forever. You should be seeing
   //  a blinking red LED on the BLE Mate.
-
+  
   // At this point the example branches. Down one branch, we'll explore what it
   //  means to go into central mode, find and connect to a BC118, send some
   //  data, and disconnect. Down the other, we'll sit around waiting for
@@ -170,7 +135,6 @@ void loop()
     }
   }
   static String inputBuffer;
-  static String sendBuffer;
   if (central)
   {
     doCentralExample(); // We're going to go to this function and never come
@@ -205,100 +169,8 @@ void loop()
       {
         inputBuffer.trim(); // Remove \n\r from end.
         inputBuffer.remove(0,4); // Remove RCV= from front.
-        Serial.println(inputBuffer);
-        switch (inputBuffer.toInt()) {
-          case 0:
-            //go straight
-            for (i = 0; i < 3; i++) {
-              matrix.setCursor(7, 0);
-              matrix.setTextSize(1);
-              matrix.setTextColor(matrix.Color333(7, 7, 7));
-              
-              matrix.print("P");
-              matrix.print("L");
-              matrix.print("Z");
-              
-              matrix.setCursor(1, 9);
-              matrix.print("D");
-              matrix.print("O");
-              matrix.print("N");
-              matrix.print("'");
-              matrix.print("T");
-              
-              matrix.setCursor(1, 18);
-              matrix.print("H");
-              matrix.print("I");
-              matrix.print("T");
-              matrix.print("M");
-              matrix.print("E");
-            
-              delay(1000);  
-            
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);  
-
-            }
-            
-            break;
-          case 1:
-            //turn left
-
-            //draw a left arrow
-            //horiz line
-            for (i = 0; i < 3; i++) {
-              matrix.drawLine(27, 15, 5, 15, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 4, 6, 14, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 26, 6, 16, matrix.Color333(4, 7, 5));
-              delay(500);
-            
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            }
-            break;
-          case 2:
-            //turn right
-            //draw a right arrow
-            //horiz line
-            for (i = 0; i < 3; i++) {
-              matrix.drawLine(5, 15, 27, 15, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 4, 26, 14, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 26, 26, 16, matrix.Color333(4, 7, 5));
-              delay(500);
-              
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            }
-
-            break;
-            
-          default:
-            for (i = 0; i < 3; i++) {
-              //draw a stop sign
-              matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));
-              
-              //STOP text
-              matrix.setCursor(4, 12);
-              matrix.setTextSize(1);
-              matrix.setTextColor(matrix.Color333(0, 0, 0));
-              
-              matrix.print("S");
-              matrix.print("T");
-              matrix.print("O");
-              matrix.print("P");
-              delay(3000);
-              
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            
-            }
-            break;
-        
-        }
         fullBuffer += inputBuffer;
         inputBuffer = "";
-        
-      Serial.flush();
-      
       }
       else
       {
@@ -314,6 +186,7 @@ void setupCentralExample()
   //  work like we want.
 
   // When ACON is ON, the BC118 will connect to the first BC118 it discovers,
+  //  whether you want it to or not. We'll disable that.
   BTModu.stdSetParam("ACON", "OFF");
   // When CCON is ON, the BC118 will immediately start doing something after
   //  it disconnects. In central mode, it immediately starts scanning, and
@@ -336,9 +209,7 @@ void setupCentralExample()
 
 void doCentralExample()
 {
-  static String inputBuffer;
-  
-  // We're going to start with an assumption of module error. That way, we
+  // We're going to tstart with an assumption of module error. That way, we
   //  can easily check against the result while we're iterating.
   BLEMate2::opResult result = BLEMate2::MODULE_ERROR;
   // This while loop will continue to scan the world for addresses until it
@@ -364,7 +235,7 @@ void doCentralExample()
       Serial.println("Module error! Everybody panic!");
     }
   } 
-
+  
   byte numAddressesFound = BTModu.numAddresses();
 
   // BC118Address is where we'll store the index of the first BC118 device we
@@ -391,131 +262,7 @@ void doCentralExample()
   }
   selectBLE();
   BTModu.connect(address);
-  //BTModu.sendData("Hello world! I can see my house from here! Whee!");
-  
-  // When a remote module connects to us, we'll start to see a bunch of stuff.
-  //  Most of that is just overhead; we don't really care about it. All we
-  //  *really* care about is data, and data looks like this:
-  // RCV=20 char max msg\n\r
-
-  // The state machine for capturing that can be pretty easy: when we've read
-  //  in \n\r, check to see if the string began with "RCV=". If yes, do
-  //  something. If no, discard it.
-  while(1){
-    BTModu.sendData("18549Team16LED");
-    while (Serial1.available() > 0)
-    {
-      inputBuffer.concat((char)Serial1.read());
-    }
-
-    // We'll probably see a lot of lines that end with \n\r- that's the default
-    //  line ending for all the connect info messages, for instance. We can
-    //  ignore all of them that don't start with "RCV=". Remember to clear your
-    //  String object after you find \n\r!!!
-    if (inputBuffer.endsWith("\n\r"))
-    {
-      if (inputBuffer.startsWith("RCV="))
-      {
-        inputBuffer.trim(); // Remove \n\r from end.
-        inputBuffer.remove(0,4); // Remove RCV= from front.
-        Serial.println(inputBuffer);
-        switch (inputBuffer.toInt()) {
-          case 0:
-            //go straight
-            for (i = 0; i < 3; i++) {
-              matrix.setCursor(7, 0);
-              matrix.setTextSize(1);
-              matrix.setTextColor(matrix.Color333(7, 7, 7));
-              
-              matrix.print("P");
-              matrix.print("L");
-              matrix.print("Z");
-              
-              matrix.setCursor(1, 9);
-              matrix.print("D");
-              matrix.print("O");
-              matrix.print("N");
-              matrix.print("'");
-              matrix.print("T");
-              
-              matrix.setCursor(1, 18);
-              matrix.print("H");
-              matrix.print("I");
-              matrix.print("T");
-              matrix.print("M");
-              matrix.print("E");
-            
-              delay(1000);  
-            
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);  
-
-            }
-            
-            break;
-          case 1:
-            //turn left
-
-            //draw a left arrow
-            //horiz line
-            for (i = 0; i < 3; i++) {
-              matrix.drawLine(27, 15, 5, 15, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 4, 6, 14, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 26, 6, 16, matrix.Color333(4, 7, 5));
-              delay(500);
-            
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            }
-            break;
-          case 2:
-            //turn right
-            //draw a right arrow
-            //horiz line
-            for (i = 0; i < 3; i++) {
-              matrix.drawLine(5, 15, 27, 15, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 4, 26, 14, matrix.Color333(4, 7, 5));
-              matrix.drawLine(16, 26, 26, 16, matrix.Color333(4, 7, 5));
-              delay(500);
-              
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            }
-
-            break;
-            
-          default:
-            for (i = 0; i < 3; i++) {
-              //draw a stop sign
-              matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));
-              
-              //STOP text
-              matrix.setCursor(4, 12);
-              matrix.setTextSize(1);
-              matrix.setTextColor(matrix.Color333(0, 0, 0));
-              
-              matrix.print("S");
-              matrix.print("T");
-              matrix.print("O");
-              matrix.print("P");
-              delay(3000);
-              
-              matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-              delay(500);
-            
-            }
-            break;
-        
-        }
-        inputBuffer = "";
-        Serial.flush();
-      }
-      else
-      {
-        inputBuffer = "";
-      }
-    }
-  }
+  BTModu.sendData("Hello world! I can see my house from here! Whee!");
   BTModu.disconnect();
   delay(500);
   selectPC();
@@ -558,7 +305,7 @@ void setupPeripheralExample()
 
   BTModu.writeConfig();
   BTModu.reset();
-
+  
   // We're set up to allow anything to connect to us now.
 }
 
