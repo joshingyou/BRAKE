@@ -154,14 +154,19 @@ void loop()
         inputBuffer.remove(0,4); // Remove RCV= from front.
         if (inputBuffer.startsWith("18549Team16LED"))
         {
-          Serial.println(inputBuffer);
-          digitalWrite(13, HIGH);
+          //Serial.println(inputBuffer);
+          
           while(1){
-            String(i).toCharArray(buf, 1);
-            BTModu.sendData(buf);
-            i++;
-            if (i > 3) i = 1;
+            digitalWrite(13, HIGH);
+            
+            BTModu.sendData("1");
             delay(2000);
+            BTModu.sendData("2");
+            delay(2000);
+            BTModu.sendData("3");
+            delay(2000);
+            digitalWrite(13, LOW);
+            delay(500);
           }
         }
       

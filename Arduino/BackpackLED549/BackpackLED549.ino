@@ -390,6 +390,7 @@ void doCentralExample()
     }
   }
   selectBLE();
+  BTModu.getAddress(BC118Address, address);
   BTModu.connect(address);
   //BTModu.sendData("Hello world! I can see my house from here! Whee!");
   
@@ -403,11 +404,12 @@ void doCentralExample()
   //  something. If no, discard it.
   while(1){
     BTModu.sendData("18549Team16LED");
+    BTModu.sendData("18549Team16LED");
     while (Serial1.available() > 0)
     {
       inputBuffer.concat((char)Serial1.read());
     }
-
+    
     // We'll probably see a lot of lines that end with \n\r- that's the default
     //  line ending for all the connect info messages, for instance. We can
     //  ignore all of them that don't start with "RCV=". Remember to clear your
@@ -508,7 +510,7 @@ void doCentralExample()
         
         }
         inputBuffer = "";
-        Serial.flush();
+        Serial1.flush();
       }
       else
       {
