@@ -157,29 +157,37 @@ void loop()
           //Serial.println(inputBuffer);
           
           while(1){
-            digitalWrite(13, HIGH);
             
+            digitalWrite(13, HIGH);
             BTModu.sendData("1");
-            delay(2000);
-            BTModu.sendData("2");
-            delay(2000);
-            BTModu.sendData("3");
-            delay(2000);
+            Serial.flush();
             digitalWrite(13, LOW);
-            delay(500);
+            delay(2000);
+            
+            digitalWrite(13, HIGH);
+            BTModu.sendData("2");
+            Serial.flush();
+            digitalWrite(13, LOW);
+            delay(2000);
+            
+            digitalWrite(13, HIGH);
+            BTModu.sendData("3");
+            Serial.flush();
+            digitalWrite(13, LOW);
+            delay(2000);
           }
         }
-      
-      inputBuffer = "";
-      Serial.flush();
-      
+        inputBuffer = "";
       }
       else
       {
         inputBuffer = "";
       }
     }
-    
+    else
+    {
+      inputBuffer = "";
+    }
     
   }
 }
