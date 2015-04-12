@@ -120,6 +120,8 @@ void doCentralExample()
   }
   BTModu.getAddress(BC118Address, address);
   BTModu.connect(address);
+  BTModu.sendData("18549Team16LED");
+  BTModu.sendData("18549Team16LED");
   //BTModu.sendData("Hello world! I can see my house from here! Whee!");
   
   // When a remote module connects to us, we'll start to see a bunch of stuff.
@@ -131,14 +133,13 @@ void doCentralExample()
   //  in \n\r, check to see if the string began with "RCV=". If yes, do
   //  something. If no, discard it.
   while(1){
-    BTModu.sendData("18549Team16LED");
-    BTModu.sendData("18549Team16LED");
-    BTModu.sendData("18549Team16LED");
-    Serial1.flush();
+
     while (Serial1.available() > 0)
     {
       inputBuffer.concat((char)Serial1.read());
+      delay(10);
     }
+    Serial.println(inputBuffer);
     
     // We'll probably see a lot of lines that end with \n\r- that's the default
     //  line ending for all the connect info messages, for instance. We can
@@ -150,21 +151,10 @@ void doCentralExample()
       {
         inputBuffer.trim(); // Remove \n\r from end.
         inputBuffer.remove(0,4); // Remove RCV= from front.
-        Serial.println(inputBuffer);
-        
         drawMatrix(inputBuffer.toInt());
-        
-        inputBuffer = "";
-      }
-      else
-      {
-        inputBuffer = "";
       }
     }
-    else
-    {
-      inputBuffer = "";
-    }
+    inputBuffer = "";
   }
   BTModu.disconnect();
   

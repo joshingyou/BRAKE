@@ -118,6 +118,7 @@ void loop()
 {
   int i = 1;
   char* buf;
+  digitalWrite(13, HIGH);
   digitalWrite(13, LOW);
   
   static String inputBuffer;
@@ -137,57 +138,29 @@ void loop()
 //  BTModu.stdCmd("STS");
   
   while(1){
-    while (Serial.available() > 0)
-    {
-      inputBuffer.concat((char)Serial.read());
-    }
+    Serial.println("Starting Loop!");
   
     // We'll probably see a lot of lines that end with \n\r- that's the default
     //  line ending for all the connect info messages, for instance. We can
     //  ignore all of them that don't start with "RCV=". Remember to clear your
     //  String object after you find \n\r!!!
-    if (inputBuffer.endsWith("\n\r"))
+    while(1)
     {
-      if (inputBuffer.startsWith("RCV="))
-      {
-        inputBuffer.trim(); // Remove \n\r from end.
-        inputBuffer.remove(0,4); // Remove RCV= from front.
-        if (inputBuffer.startsWith("18549Team16LED"))
-        {
-          //Serial.println(inputBuffer);
-          
-          while(1){
-            
-            digitalWrite(13, HIGH);
-            BTModu.sendData("1");
-            Serial.flush();
-            digitalWrite(13, LOW);
-            delay(2000);
-            
-            digitalWrite(13, HIGH);
-            BTModu.sendData("2");
-            Serial.flush();
-            digitalWrite(13, LOW);
-            delay(2000);
-            
-            digitalWrite(13, HIGH);
-            BTModu.sendData("3");
-            Serial.flush();
-            digitalWrite(13, LOW);
-            delay(2000);
-          }
-        }
-        inputBuffer = "";
-      }
-      else
-      {
-        inputBuffer = "";
-      }
+      digitalWrite(13, HIGH);
+      BTModu.sendData("1");
+      digitalWrite(13, LOW);
+      delay(2000);
+      
+      digitalWrite(13, HIGH);
+      BTModu.sendData("2");
+      digitalWrite(13, LOW);
+      delay(2000);
+      
+      digitalWrite(13, HIGH);
+      BTModu.sendData("3");
+      digitalWrite(13, LOW);
+      delay(2000);
     }
-    else
-    {
-      inputBuffer = "";
-    }
-    
+    inputBuffer = "";
   }
 }

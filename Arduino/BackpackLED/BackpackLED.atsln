@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{E66E83B9-2572-4076-B26E-6BE79FF3018A}") = "BackpackLED", "BackpackLED\BackpackLED.cppproj", "{816FFE65-B823-4DC7-86BE-D1450FF073E2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{816FFE65-B823-4DC7-86BE-D1450FF073E2}.Debug|AVR.ActiveCfg = Debug|AVR
+		{816FFE65-B823-4DC7-86BE-D1450FF073E2}.Debug|AVR.Build.0 = Debug|AVR
+		{816FFE65-B823-4DC7-86BE-D1450FF073E2}.Release|AVR.ActiveCfg = Release|AVR
+		{816FFE65-B823-4DC7-86BE-D1450FF073E2}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
