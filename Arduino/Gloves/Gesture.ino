@@ -82,9 +82,9 @@ void loop()
     middle_curled = middle_data; 
 
   //Map values 
-  thumb_data = map (thumb_data, thumb_straight, thumb_curled, 0, 100); 
-  index_data = map (index_data, index_straight, index_curled, 0, 100); 
-  middle_data = map (middle_data, middle_straight, middle_curled, 0, 100); 
+  thumb_data = map (thumb_data, thumb_curled, thumb_straight, 0, 100); 
+  index_data = map (index_data, index_curled, index_straight, 0, 100); 
+  middle_data = map (middle_data, middle_curled, middle_straight, 0, 100); 
  
  //Detect the index curled  
   if (index_data  <= bias && 
