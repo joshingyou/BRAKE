@@ -403,11 +403,7 @@ void Adafruit_GFX::drawXBitmap(int16_t x, int16_t y,
   }
 }
 
-#if ARDUINO >= 100
 size_t Adafruit_GFX::write(uint8_t c) {
-#else
-void Adafruit_GFX::write(uint8_t c) {
-#endif
   if (c == '\n') {
     cursor_y += textsize*8;
     cursor_x  = 0;
@@ -421,9 +417,7 @@ void Adafruit_GFX::write(uint8_t c) {
       cursor_x = 0;
     }
   }
-#if ARDUINO >= 100
   return 1;
-#endif
 }
 
 // Draw a character

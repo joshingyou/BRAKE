@@ -60,9 +60,11 @@ void loop()
   //  milliseconds has elapsed since my last receive, that I'm in a quiet zone
   //  and I can switch over to the PC to report what I've heard.
   static String fullBuffer = "";
-  doCentralExample(); // We're going to go to this function and never come
+  //doCentralExample(); // We're going to go to this function and never come
                         //  back, since we want to do the central connection
                         //  demo just once.
+  while(1);
+  
 }
 
 
@@ -118,10 +120,10 @@ void doCentralExample()
       BC118Address = i;
     }
   }
-  BTModu.getAddress(BC118Address, address);
-  BTModu.connect(address);
-  BTModu.sendData("18549Team16LED");
-  BTModu.sendData("18549Team16LED");
+  //BTModu.getAddress(BC118Address, address);
+  //BTModu.connect(address);
+  //BTModu.sendData("18549Team16LED");
+  //BTModu.sendData("18549Team16LED");
   //BTModu.sendData("Hello world! I can see my house from here! Whee!");
   
   // When a remote module connects to us, we'll start to see a bunch of stuff.
@@ -132,7 +134,7 @@ void doCentralExample()
   // The state machine for capturing that can be pretty easy: when we've read
   //  in \n\r, check to see if the string began with "RCV=". If yes, do
   //  something. If no, discard it.
-  while(1){
+  /*while(1){
 
     while (Serial1.available() > 0)
     {
@@ -161,6 +163,7 @@ void doCentralExample()
   delay(500);
   Serial.println("The End!");
   while(1);
+  */
 }
 
 
@@ -244,7 +247,7 @@ void initBluetooth()
   //  set up as a peripheral device, advertising forever. You should be seeing
   //  a blinking red LED on the BLE Mate.
 
-  setupCentralExample(); 
+  setupPeripheralExample(); 
 }
 
 void setupCentralExample()
@@ -364,3 +367,42 @@ void drawMatrix(int msgNum)
   }
 }
 
+
+// The default settings are good enough for the peripheral example; just to
+//  be on the safe side, we'll check the amICentral() function and do a r/w/r
+//  if we're in central mode instead of peripheral mode.
+void setupPeripheralExample()
+{
+  boolean inCentralMode = false;
+  // A word here on amCentral: amCentral's parameter is passed by reference, so
+  //  the answer to the question "am I in central mode" is handed back as the
+  //  value in the boolean passed to it when it is called. The reason for this
+  //  is the allow the user to check the return value and determine if a module
+  //  error occurred: should I trust the answer or is there something larger
+  //  wrong than merely being in the wrong mode?
+  BTModu.amCentral(inCentralMode); 
+  if (inCentralMode)
+  {
+    BTModu.BLEPeripheral();
+    BTModu.BLEAdvertise();
+  }
+
+  // There are a few more advance settings we'll probably, but not definitely,
+  //  want to tweak before we reset the device.
+
+  // The CCON parameter will enable advertising immediately after a disconnect.
+  BTModu.stdSetParam("CCON", "ON");
+  // The ADVP parameter controls the advertising rate. Can be FAST or SLOW.
+  BTModu.stdSetParam("ADVP", "FAST");
+  // The ADVT parameter controls the timeout before advertising stops. Can be
+  //  0 (for never) to 4260 (71min); integer value, in seconds.
+  BTModu.stdSetParam("ADVT", "0");
+  // The ADDR parameter controls the devices we'll allow to connect to us.
+  //  All zeroes is "anyone".
+  BTModu.stdSetParam("ADDR", "000000000000");
+
+  BTModu.writeConfig();
+  BTModu.reset();
+
+  // We're set up to allow anything to connect to us now.
+}

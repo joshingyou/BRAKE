@@ -5,42 +5,46 @@
  * backpack. 
  *
  * Created: 4/12/2015 1:39:40 PM
- *  Author: Jiaxin
+ *  Author: Josh Yu
  */ 
 
 
-#include <avr/io.h>
+//#include <avr/io.h>
 #include "BackpackLED.h"
-#include <SparkFun_BLEMate2.h>      // BLE Library
-#include <Adafruit_GFX.h>           // Core graphics library
-#include <RGBmatrixPanel.h>         // LED hardware library
+#include "../lib/Arduino/Arduino.h"
+#include "../lib/SparkFun_BLEMate2/SparkFun_BLEMate2.h"    // BLE Library
+#include "../lib/Adafruit_GFX/Adafruit_GFX.h"              // Core graphics library
+#include "../lib/Adafruit_RGBMatrix/RGBmatrixPanel.h"      // LED hardware library
 
-int main(void)
-{
-    while(1)
-    {
-        //TODO:: Please write your application code 
-    }
-}
+// Private functions
+void initMatrix();
+void initBluetooth();
+void drawMatrix(int msgNum);
 
-#define CLK 11  // MUST be on PORTB! (Use pin 11 on Mega)
-#define OE  9
-#define LAT 12
-#define A   A0
-#define B   A1
-#define C   A2
-#define D   A3
+static String fullBuffer = "";
+static String inputBuffer;
+static String sendBuffer;
+boolean central = true;
+int counter = 0;
+int i = 0;
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false);
 
 BLEMate2 BTModu(&Serial1);
 
-// This boolean determines whether we're going to do a central or peripheral
-//  example with this code.
 
-boolean central = true;
-int counter = 0;
-int i = 0;
+
+int main(void)
+{
+    setup();
+    while(1)
+    {
+        doCentralExample();
+    }
+    return 0;
+}
+
+
 
 
 void setup()
@@ -53,78 +57,9 @@ void setup()
     initBluetooth();
 }
 
-void loop()
-{
-    // Since I'm going to be reporting strings back over serial to the PC, I want
-    //  to make sure that I'm (probably) not going to be looking away from the BLE
-    //  device during a data receive period. I'll *guess* that, if more than 1000
-    //  milliseconds has elapsed since my last receive, that I'm in a quiet zone
-    //  and I can switch over to the PC to report what I've heard.
-    static String fullBuffer = "";
-    doCentralExample(); // We're going to go to this function and never come
-    //  back, since we want to do the central connection
-    //  demo just once.
-}
-
-
 
 void doCentralExample()
 {
-    static String inputBuffer;
-    static String sendBuffer;
-    
-    // We're going to start with an assumption of module error. That way, we
-    //  can easily check against the result while we're iterating.
-    BLEMate2::opResult result = BLEMate2::MODULE_ERROR;
-    // This while loop will continue to scan the world for addresses until it
-    //  finds some. Why? Why not?
-    while(1)
-    {
-        result = BTModu.BLEScan(2);
-        if (result == BLEMate2::SUCCESS)
-        {
-            Serial.println("Success!");
-            break;
-        }
-        else if (result == BLEMate2::REMOTE_ERROR)
-        {
-            Serial.println("Remote error!");
-        }
-        else if (result == BLEMate2::MODULE_ERROR)
-        {
-            Serial.println("Module error! Everybody panic!");
-        }
-    }
-
-    byte numAddressesFound = BTModu.numAddresses();
-
-    // BC118Address is where we'll store the index of the first BC118 device we
-    //  find. We'll know it because the address will start with "20FABB". By
-    //  starting at 10, we know when we've found something b/c it'll be 4 or less.
-    byte BC118Address = 0;
-    String address;
-
-    Serial.print("We found ");
-    Serial.print(numAddressesFound);
-    Serial.println(" BLE devices!");
-    // We're going to iterate over numAddressesFound, print each address, and
-    //  check to see if each one belongs to a BC118. The first BC118 we find,
-    //  we'll connect to, but only after we report our address list.
-    for (byte i = 0; i < numAddressesFound; i++)
-    {
-        BTModu.getAddress(i, address);
-        Serial.println("Found address: " + address);
-        if (address.startsWith("20FABB"))
-        {
-            BC118Address = i;
-        }
-    }
-    BTModu.getAddress(BC118Address, address);
-    BTModu.connect(address);
-    BTModu.sendData("18549Team16LED");
-    BTModu.sendData("18549Team16LED");
-    //BTModu.sendData("Hello world! I can see my house from here! Whee!");
-    
     // When a remote module connects to us, we'll start to see a bunch of stuff.
     //  Most of that is just overhead; we don't really care about it. All we
     //  *really* care about is data, and data looks like this:
@@ -134,11 +69,10 @@ void doCentralExample()
     //  in \n\r, check to see if the string began with "RCV=". If yes, do
     //  something. If no, discard it.
     while(1){
-
-        while (Serial1.available() > 0)
+        while (!inputBuffer.endsWith("\n\r"))
         {
             inputBuffer.concat((char)Serial1.read());
-            delay(10);
+            //delay(10);
         }
         Serial.println(inputBuffer);
         
@@ -146,15 +80,19 @@ void doCentralExample()
         //  line ending for all the connect info messages, for instance. We can
         //  ignore all of them that don't start with "RCV=". Remember to clear your
         //  String object after you find \n\r!!!
-        if (inputBuffer.endsWith("\n\r"))
+//        if (inputBuffer.endsWith("\n\r"))
+//        {
+        if (inputBuffer.startsWith("RCV="))
         {
-            if (inputBuffer.startsWith("RCV="))
+            inputBuffer.trim(); // Remove \n\r from end.
+            inputBuffer.remove(0,4); // Remove RCV= from front.
+            if (inputBuffer == "BL1") 
             {
-                inputBuffer.trim(); // Remove \n\r from end.
-                inputBuffer.remove(0,4); // Remove RCV= from front.
-                drawMatrix(inputBuffer.toInt());
+                drawMatrix(1);
             }
+            drawMatrix(inputBuffer.toInt());
         }
+//        }
         inputBuffer = "";
     }
     BTModu.disconnect();
@@ -245,71 +183,44 @@ void initBluetooth()
     //  set up as a peripheral device, advertising forever. You should be seeing
     //  a blinking red LED on the BLE Mate.
 
-    setupCentralExample();
-}
+    //***************SETUP BLUETOOTH PERIPHERAL**********************
+    boolean inCentralMode = false;
+    // A word here on amCentral: amCentral's parameter is passed by reference, so
+    //  the answer to the question "am I in central mode" is handed back as the
+    //  value in the boolean passed to it when it is called. The reason for this
+    //  is the allow the user to check the return value and determine if a module
+    //  error occurred: should I trust the answer or is there something larger
+    //  wrong than merely being in the wrong mode?
+    BTModu.amCentral(inCentralMode);
+    if (inCentralMode)
+    {
+        BTModu.BLEPeripheral();
+        BTModu.BLEAdvertise();
+    }
 
-void setupCentralExample()
-{
-    // We need to change some settings, first, to make this central mode thing
-    //  work like we want.
+    // There are a few more advance settings we'll probably, but not definitely,
+    //  want to tweak before we reset the device.
 
-    // When ACON is ON, the BC118 will connect to the first BC118 it discovers,
-    BTModu.stdSetParam("ACON", "OFF");
-    // When CCON is ON, the BC118 will immediately start doing something after
-    //  it disconnects. In central mode, it immediately starts scanning, and
-    //  in peripheral mode, it immediately starts advertising. We don't want it
-    //  to scan without our permission, so let's disable that.
-    BTModu.stdSetParam("CCON", "OFF");
-    // Turn off advertising. You actually need to do this, or the presence of
-    //  the advertising flag can confuse the firmware when the module is in
-    //  central mode.
-    BTModu.BLENoAdvertise();
-    // Put the module in central mode.
-    BTModu.BLECentral();
-    // Store these changes.
+    // The CCON parameter will enable advertising immediately after a disconnect.
+    BTModu.stdSetParam("CCON", "ON");
+    // The ADVP parameter controls the advertising rate. Can be FAST or SLOW.
+    BTModu.stdSetParam("ADVP", "FAST");
+    // The ADVT parameter controls the timeout before advertising stops. Can be
+    //  0 (for never) to 4260 (71min); integer value, in seconds.
+    BTModu.stdSetParam("ADVT", "0");
+    // The ADDR parameter controls the devices we'll allow to connect to us.
+    //  All zeroes is "anyone".
+    BTModu.stdSetParam("ADDR", "000000000000");
+
     BTModu.writeConfig();
-    // Reset the module. Write-reset is important here!!!!!!
     BTModu.reset();
-
-    // The module is now configured to connect to another external device.
+  
+    // We're set up to allow anything to connect to us now.
 }
 
 void drawMatrix(int msgNum)
 {
     switch (msgNum) {
-        case 0:
-        //go straight
-        for (i = 0; i < 3; i++) {
-            matrix.setCursor(7, 0);
-            matrix.setTextSize(1);
-            matrix.setTextColor(matrix.Color333(7, 7, 7));
-            
-            matrix.print("P");
-            matrix.print("L");
-            matrix.print("Z");
-            
-            matrix.setCursor(1, 9);
-            matrix.print("D");
-            matrix.print("O");
-            matrix.print("N");
-            matrix.print("'");
-            matrix.print("T");
-            
-            matrix.setCursor(1, 18);
-            matrix.print("H");
-            matrix.print("I");
-            matrix.print("T");
-            matrix.print("M");
-            matrix.print("E");
-            
-            delay(1000);
-            
-            matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-            delay(500);
-        }
-        
-        break;
-
         case 1:
         //turn left
 
@@ -341,7 +252,7 @@ void drawMatrix(int msgNum)
 
         break;
         
-        default:
+        3:
         for (i = 0; i < 3; i++) {
             //draw a stop sign
             matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));

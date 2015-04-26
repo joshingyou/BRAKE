@@ -20,23 +20,23 @@
     <OverrideVtor>false</OverrideVtor>
     <CacheFlash>true</CacheFlash>
     <ProgFlashFromRam>true</ProgFlashFromRam>
-    <RamSnippetAddress />
+    <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <preserveEEPROM>true</preserveEEPROM>
-    <OverrideVtorValue />
+    <OverrideVtorValue>exception_table</OverrideVtorValue>
     <BootSegment>2</BootSegment>
-    <eraseonlaunchrule>1</eraseonlaunchrule>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
     <AsfFrameworkConfig>
       <framework-data xmlns="">
-  <options />
-  <configurations />
-  <files />
-  <documentation help="" />
-  <offline-documentation help="" />
-  <dependencies>
-    <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.22.0" />
-  </dependencies>
-</framework-data>
+        <options />
+        <configurations />
+        <files />
+        <documentation help="" />
+        <offline-documentation help="" />
+        <dependencies>
+          <content-extension eid="atmel.asf" uuidref="Atmel.ASF" version="3.22.0" />
+        </dependencies>
+      </framework-data>
     </AsfFrameworkConfig>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -53,6 +53,8 @@
   <avrgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>NDEBUG</Value>
+      <Value>F_CPU=16000000L</Value>
+      <Value>__AVR_ATmega2560__</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
@@ -64,6 +66,8 @@
   <avrgcccpp.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>NDEBUG</Value>
+      <Value>F_CPU=16000000L</Value>
+      <Value>__AVR_ATmega2560__</Value>
     </ListValues>
   </avrgcccpp.compiler.symbols.DefSymbols>
   <avrgcccpp.compiler.optimization.level>Optimize for size (-Os)</avrgcccpp.compiler.optimization.level>
@@ -92,6 +96,8 @@
   <avrgcc.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
+      <Value>F_CPU=16000000L</Value>
+      <Value>__AVR_ATmega2560__</Value>
     </ListValues>
   </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
@@ -104,6 +110,8 @@
   <avrgcccpp.compiler.symbols.DefSymbols>
     <ListValues>
       <Value>DEBUG</Value>
+      <Value>F_CPU=16000000L</Value>
+      <Value>__AVR_ATmega2560__</Value>
     </ListValues>
   </avrgcccpp.compiler.symbols.DefSymbols>
   <avrgcccpp.compiler.optimization.level>Optimize (-O1)</avrgcccpp.compiler.optimization.level>
@@ -136,6 +144,141 @@
     <Compile Include="lib\Adafruit_NeoPixel\Adafruit_NeoPixel.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="lib\Adafruit_RGBMatrix\gamma.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Adafruit_RGBMatrix\RGBmatrixPanel.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Adafruit_RGBMatrix\RGBmatrixPanel.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\abi.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Arduino.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\binary.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\CDC.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Client.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial0.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial1.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial2.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial3.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HardwareSerial_private.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\HID.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\hooks.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\IPAddress.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\IPAddress.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\new.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\new.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\pins_arduino.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Print.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Print.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Printable.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Server.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Stream.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Stream.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Tone.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\Udp.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\USBAPI.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\USBCore.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\USBCore.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\USBDesc.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\WCharacter.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\WInterrupts.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring_analog.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring_digital.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring_private.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring_pulse.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\wiring_shift.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\WMath.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\WString.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="lib\Arduino\WString.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lib\SparkFun_BLEMate2\connections.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -156,6 +299,8 @@
     <Folder Include="lib" />
     <Folder Include="lib\Adafruit_GFX" />
     <Folder Include="lib\Adafruit_NeoPixel" />
+    <Folder Include="lib\Arduino" />
+    <Folder Include="lib\Adafruit_RGBMatrix" />
     <Folder Include="lib\SparkFun_BLEMate2" />
     <Folder Include="src" />
   </ItemGroup>
