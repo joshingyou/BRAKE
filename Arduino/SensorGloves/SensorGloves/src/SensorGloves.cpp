@@ -14,9 +14,14 @@ extern "C" {
 #include <avr/io.h>
 #include <util/delay.h>
 
-static String fullBuffer;
-static String inputBuffer;
-static String sendBuffer;
+String fullBuffer;
+String inputBuffer;
+String sendBuffer;
+
+boolean left_arrow_on;
+boolean right_arrow_on;
+boolean top_arrow_on;
+boolean status_led_on;
 
 BLEMate2 BTModu(&Serial);
 
@@ -51,27 +56,26 @@ int rightMiddleReading = 0;
 #endif
 
 void setupPeripheralExample();
+void do_serial_task();
+void do_flex_sensor_read_task();
+void do_led_blink_task();
+
+
+#define SERIAL_READ_TASK_PERIOD 50
+#define FLEX_SENSOR_READ_TASK_PERIOD 100
+#define LED_BLINK_TASK_PERIOD 200
+
+unsigned long serial_task_last_run = 0;
+unsigned long flex_sensor_read_task_last_run = 0;
+unsigned long led_blink_task_last_run = 0;
+
 
 void setup()
 {
     init();
     setup_leds();
-    blink_left_arrow(2);
-    blink_top_arrow(2);
-    blink_right_arrow(2);
-    blink_status_led(2);
+    
     Serial.begin(9600);           // This is the BC118 default baud rate.
-
-    pinMode(2, OUTPUT); 
-    pinMode(3, OUTPUT);
-    pinMode(4, OUTPUT);
-    pinMode(5, OUTPUT);
-    pinMode(6, OUTPUT);
-    pinMode(7, OUTPUT);
-    pinMode(8, OUTPUT);
-    pinMode(9, OUTPUT);
-    pinMode(10, OUTPUT);
-    pinMode(11, OUTPUT);
 
     #ifdef DEBUG
     Serial.println("Serial has started...");
@@ -181,7 +185,7 @@ void setup()
 
 int find_text(String needle, String haystack) {
     int foundpos = -1;
-    for (unsigned int i = 0; (i < (haystack.length() - needle.length())); i++) {
+    for (unsigned int i = (haystack.length() - needle.length() - 1); (i > 0); i--) {
         if (haystack.substring(i,needle.length()+i) == needle) {
             foundpos = i;
         }
@@ -200,159 +204,28 @@ void loop()
     //  in \n\r, check to see if the string began with "RCV=". If yes, do
     //  something. If no, discard it.
 
-
-    boolean done = false;
-    while (!done && Serial.available() > 0)
-    {
-        digitalWrite(11,HIGH);
-        inputBuffer.concat((char)Serial.read());
-        digitalWrite(11,LOW);
-        if (find_text(String("\n\r"), inputBuffer) != -1) {
-            done = true;
-        }
+    static unsigned long main_loop_timer;
+    main_loop_timer = millis();
+    
+    if (main_loop_timer > (serial_task_last_run + SERIAL_READ_TASK_PERIOD)) {
+        Serial.println("Serial runs");
+        do_serial_task();
+        
+        serial_task_last_run = millis();
     }
 
-    // We'll probably see a lot of lines that end with \n\r- that's the default
-    //  line ending for all the connect info messages, for instance. We can
-    //  ignore all of them that don't start with "RCV=". Remember to clear your
-    //  String object after you find \n\r!!!
-
-    int rcv_pos = find_text(String("RCV="), inputBuffer);
-    if (rcv_pos == -1) {
-        inputBuffer = "";
-    } else {
-        inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
-        int line_end_pos = find_text(String("\n\r"), inputBuffer);
-        inputBuffer.remove((unsigned int)line_end_pos);
-        #ifdef DEBUG
-        Serial.println(inputBuffer);
-        #endif
-            
-
-            // what kind of messages go to glove? navigation, ack from backpack, 
-            // check if the input buffer is intended for the left or right glove
-            // check if the message is coming from the phone or backpack
-            // then check flex sensors for any special readings for sending to backpack
-
-            //for acknowledgement: if there's already been an acknowledgment for 
-            
-            #ifdef LEFTGLOVE
-                if (inputBuffer == "LP1") {
-                    Serial.println("TO LEFT GLOVE: NAV SAYS LEFT");
-                    blink_left_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PLGHEADER);
-                    sendBuffer.concat("1");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";
-                } else if (inputBuffer == "LP2") {
-                    Serial.println("TO LEFT GLOVE: NAV SAYS RIGHT");
-                    blink_right_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PLGHEADER);
-                    sendBuffer.concat("2");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";                    
-                } else if (inputBuffer == "LP3") {
-                    Serial.println("TO LEFT GLOVE: NAV SAYS STRAIGHT");
-                    blink_top_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PLGHEADER);
-                    sendBuffer.concat("3");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";
-                } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
-                    Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
-                    blink_indicator(10);
-                    turnSignalSent = 0;
-                }
-            #endif
-
-            #ifdef RIGHTGLOVE
-                if (inputBuffer == "RP1") {
-                    Serial.println("TO RIGHT GLOVE: NAV SAYS LEFT");
-                    blink_left_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PRGHEADER);
-                    sendBuffer.concat("1");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";
-                } else if (inputBuffer == "RP2") {
-                    Serial.println("TO RIGHT GLOVE: NAV SAYS RIGHT");
-                    blink_right_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PRGHEADER);
-                    sendBuffer.concat("2");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";
-                } else if (inputBuffer == "RP3") {
-                    Serial.println("TO RIGHT GLOVE: NAV SAYS STRAIGHT");
-                    blink_top_arrow(10);
-                    //do some ack stuff here
-                    Serial.flush();
-                    sendBuffer.concat(PRGHEADER);
-                    sendBuffer.concat("3");
-                    BTModu.sendData(sendBuffer);
-                    sendBuffer = "";
-                } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
-                    Serial.println("TO RIGHT GLOVE: BACKPACK KNOWS WHAT'S UP");
-                    blink_indicator(10);
-                    turnSignalSent = 0;
-                }
-            #endif
-
-            fullBuffer += inputBuffer;
-            inputBuffer = "";
-            sendBuffer = "";
-
-            
+    if (main_loop_timer > (flex_sensor_read_task_last_run + FLEX_SENSOR_READ_TASK_PERIOD)) {
+        Serial.println("Flex read runs");
+        do_flex_sensor_read_task();
+        flex_sensor_read_task_last_run = millis();
     }
         
 
-        //read them flex sensors here
-        #ifdef LEFTGLOVE
-            leftThumbReading = analogRead(LEFTTHUMBPIN);
-            leftIndexReading = analogRead(LEFTINDEXPIN);
-            leftMiddleReading = analogRead(LEFTMIDDLEPIN);
-            Serial.println("Right Flex Reading (T, I, M): ");
-            Serial.println(leftThumbReading);
-            Serial.println(leftIndexReading);
-            Serial.println(leftMiddleReading);
-            if ((leftThumbReading > 530) && (leftIndexReading > 530) && (leftMiddleReading > 530) && (turnSignalSent == 0)) {
-                Serial.flush();
-                sendBuffer.concat(BPLGHEADER);
-                sendBuffer.concat("1");
-                BTModu.sendData(sendBuffer);
-                sendBuffer = "";
-                turnSignalSent = 1;
-            }
-        #endif
-
-        #ifdef RIGHTGLOVE
-            rightThumbReading = analogRead(RIGHTTHUMBPIN);
-            rightIndexReading = analogRead(RIGHTINDEXPIN);
-            rightMiddleReading = analogRead(RIGHTMIDDLEPIN);
-            Serial.println("Right Flex Reading (T, I, M): ");
-            Serial.println(rightThumbReading);
-            Serial.println(rightIndexReading);
-            Serial.println(rightMiddleReading);
-            if ((rightThumbReading > 530) && (rightIndexReading > 530) && (rightMiddleReading > 530) && (turnSignalSent == 0)) {
-                Serial.flush();
-                sendBuffer.concat(BPRGHEADER);
-                sendBuffer.concat("2");
-                BTModu.sendData(sendBuffer);
-                sendBuffer = "";
-                turnSignalSent = 1;
-            }            
-        #endif
-
-        delay(500);
-
+    if (main_loop_timer > (led_blink_task_last_run + LED_BLINK_TASK_PERIOD)) {
+        Serial.println("LED blink runs");
+        do_led_blink_task();
+        led_blink_task_last_run = millis();
+    }
 }
 
 // The default settings are good enough for the peripheral example; just to
@@ -392,4 +265,172 @@ void setupPeripheralExample()
     BTModu.reset();
 
     // We're set up to allow anything to connect to us now.
+}
+
+void do_serial_task()
+{
+    boolean done = false;
+    while (!done && Serial.available() > 0)
+    {
+        digitalWrite(11,HIGH);
+        inputBuffer.concat((char)Serial.read());
+        digitalWrite(11,LOW);
+        if (find_text(String("\n\r"), inputBuffer) != -1) {
+            done = true;
+        }
+    }
+    // We'll probably see a lot of lines that end with \n\r- that's the default
+    //  line ending for all the connect info messages, for instance. We can
+    //  ignore all of them that don't start with "RCV=". Remember to clear your
+    //  String object after you find \n\r!!!
+
+    int rcv_pos = find_text(String("RCV="), inputBuffer);
+    if (rcv_pos == -1) {
+        inputBuffer = "";
+        } else {
+        inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
+        int line_end_pos = find_text(String("\n\r"), inputBuffer);
+        inputBuffer.remove((unsigned int)line_end_pos);
+        #ifdef DEBUG
+        Serial.println(inputBuffer);
+        #endif
+        
+
+        // what kind of messages go to glove? navigation, ack from backpack,
+        // check if the input buffer is intended for the left or right glove
+        // check if the message is coming from the phone or backpack
+        // then check flex sensors for any special readings for sending to backpack
+
+        //for acknowledgement: if there's already been an acknowledgment for
+        
+        #ifdef LEFTGLOVE
+        if (inputBuffer == "LP1") {
+            Serial.println("TO LEFT GLOVE: NAV SAYS LEFT");
+            left_arrow_on = true;
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PLGHEADER);
+            sendBuffer.concat("1");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "LP2") {
+            Serial.println("TO LEFT GLOVE: NAV SAYS RIGHT");
+            right_arrow_on = true;
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PLGHEADER);
+            sendBuffer.concat("2");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "LP3") {
+            Serial.println("TO LEFT GLOVE: NAV SAYS STRAIGHT");
+            top_arrow_on = true;
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PLGHEADER);
+            sendBuffer.concat("3");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
+            Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
+            status_led_on = true;
+            turnSignalSent = 0;
+        }
+        #endif
+
+        #ifdef RIGHTGLOVE
+        if (inputBuffer == "RP1") {
+            Serial.println("TO RIGHT GLOVE: NAV SAYS LEFT");
+            
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PRGHEADER);
+            sendBuffer.concat("1");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "RP2") {
+            Serial.println("TO RIGHT GLOVE: NAV SAYS RIGHT");
+            blink_right_arrow(10);
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PRGHEADER);
+            sendBuffer.concat("2");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "RP3") {
+            Serial.println("TO RIGHT GLOVE: NAV SAYS STRAIGHT");
+            blink_top_arrow(10);
+            //do some ack stuff here
+            Serial.flush();
+            sendBuffer.concat(PRGHEADER);
+            sendBuffer.concat("3");
+            BTModu.sendData(sendBuffer);
+            sendBuffer = "";
+            } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
+            Serial.println("TO RIGHT GLOVE: BACKPACK KNOWS WHAT'S UP");
+            blink_indicator(10);
+            turnSignalSent = 0;
+        }
+        #endif
+
+        fullBuffer += inputBuffer;
+        inputBuffer = "";
+        sendBuffer = "";
+    }
+}
+
+void do_flex_sensor_read_task()
+{
+    //read them flex sensors here
+    #ifdef LEFTGLOVE
+    leftThumbReading = analogRead(LEFTTHUMBPIN);
+    leftIndexReading = analogRead(LEFTINDEXPIN);
+    leftMiddleReading = analogRead(LEFTMIDDLEPIN);
+    Serial.println("Right Flex Reading (T, I, M): ");
+    Serial.println(leftThumbReading);
+    Serial.println(leftIndexReading);
+    Serial.println(leftMiddleReading);
+    if ((leftThumbReading > 530) && (leftIndexReading > 530) && (leftMiddleReading > 530) && (turnSignalSent == 0)) {
+        Serial.flush();
+        sendBuffer.concat(BPLGHEADER);
+        sendBuffer.concat("1");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+        turnSignalSent = 1;
+    }
+    #endif
+
+    #ifdef RIGHTGLOVE
+    rightThumbReading = analogRead(RIGHTTHUMBPIN);
+    rightIndexReading = analogRead(RIGHTINDEXPIN);
+    rightMiddleReading = analogRead(RIGHTMIDDLEPIN);
+    Serial.println("Right Flex Reading (T, I, M): ");
+    Serial.println(rightThumbReading);
+    Serial.println(rightIndexReading);
+    Serial.println(rightMiddleReading);
+    if ((rightThumbReading > 530) && (rightIndexReading > 530) && (rightMiddleReading > 530) && (turnSignalSent == 0)) {
+        Serial.flush();
+        sendBuffer.concat(BPRGHEADER);
+        sendBuffer.concat("2");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+        turnSignalSent = 1;
+    }
+    #endif
+}
+
+void do_led_blink_task()
+{
+    if (left_arrow_on) {
+        blink_left_arrow();
+    }
+    if (right_arrow_on) {
+        blink_right_arrow();
+    }
+    if (top_arrow_on) {
+        blink_top_arrow();
+    }
+    if (status_led_on) {
+        blink_status_led();
+    }
 }
