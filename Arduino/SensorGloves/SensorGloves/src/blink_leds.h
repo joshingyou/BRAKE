@@ -9,8 +9,10 @@
 #ifndef BLINK_LEDS_H_
 #define BLINK_LEDS_H_
 
+void setup_leds(void);
 void blink_left_arrow (unsigned int times);
 void blink_right_arrow (unsigned int times);
 void blink_top_arrow (unsigned int times);
+void blink_status_led (unsigned int times);
 
 #endif /* BLINK_LEDS_H_ */

@@ -9,9 +9,8 @@
 #ifndef SENSORGLOVES_H_
 #define SENSORGLOVES_H_
 
-int main();
-
-
+void setup();
+void loop();
 
 
 #endif /* SENSORGLOVES_H_ */

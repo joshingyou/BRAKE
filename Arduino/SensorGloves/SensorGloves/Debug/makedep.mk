@@ -54,5 +54,7 @@ lib\SparkFun_BLEMate2\SparkFun_BLEMate2.cpp
 
 src\blink_leds.c
 
+src\main.cpp
+
 src\SensorGloves.cpp
 

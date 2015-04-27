@@ -11,6 +11,8 @@ extern "C" {
 }
 #include "../lib/Arduino/Arduino.h"
 #include "../lib/SparkFun_BLEMate2/SparkFun_BLEMate2.h"
+#include <avr/io.h>
+#include <util/delay.h>
 
 static String fullBuffer;
 static String inputBuffer;
@@ -24,7 +26,6 @@ BLEMate2 BTModu(&Serial);
 #define BPRGHEADER "BR"
 
 int counter = 1;
-int i = 0;
 int leftFlexReading = 0;
 int rightFlexReading = 0;
 int turnSignalSent = 0;
@@ -33,11 +34,18 @@ void setupPeripheralExample();
 
 void setup()
 {
+    init();
+    setup_leds();
+    blink_left_arrow(2);
+    blink_top_arrow(2);
+    blink_right_arrow(2);
+    blink_status_led(2);
     Serial.begin(9600);           // This is the BC118 default baud rate.
     #ifdef DEBUG
     Serial.println("Serial has started...");
     #endif
-    delay(1000);
+    
+
 
     // Regarding function return values: most functions that interact with the
     //  BC118 will return BLEMate2::opResult values. The possible values here
@@ -56,7 +64,7 @@ void setup()
     boolean restoreSuccess = false;
     boolean writeConfigSuccess = false;
     boolean secondResetSuccess = false;
-    for (i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         // Reset is a blocking function which gives the BC118 a few seconds to reset.
         //  After a reset, the module will return to whatever settings are in
         //  non-volatile memory. One other *super* important thing it does is issue
@@ -110,7 +118,7 @@ void setup()
         }
 
         setup_try_again:
-        #ifdef DEBUG
+        //#ifdef DEBUG
         if (!firstResetSuccess) {
             Serial.println("Module reset error!");
             } else if (!restoreSuccess) {
@@ -121,8 +129,9 @@ void setup()
             Serial.println("Second module reset error!");
             } else {
             Serial.println("Reset/Restore/Write Config PASSED...");
+            break;
         }
-        #endif
+        //#endif
     }
     if (!(firstResetSuccess && restoreSuccess && writeConfigSuccess && secondResetSuccess)) {
         // Setup failed after 10 tries
@@ -148,87 +157,76 @@ int find_text(String needle, String haystack) {
     return foundpos;
 }
 
-int main()
+void loop()
 {
-    // Since I'm going to be reporting strings back over serial to the PC, I want
-    //  to make sure that I'm (probably) not going to be looking away from the BLE
-    //  device during a data receive period. I'll *guess* that, if more than 1000
-    //  milliseconds has elapsed since my last receive, that I'm in a quiet zone
-    //  and I can switch over to the PC to report what I've heard.
-    setup();
+    // When a remote module connects to us, we'll start to see a bunch of stuff.
+    //  Most of that is just overhead; we don't really care about it. All we
+    //  *really* care about is data, and data looks like this:
+    // RCV=20 char max msg\n\r
 
-    while(1) {
-        // This is the peripheral example code.
+    // The state machine for capturing that can be pretty easy: when we've read
+    //  in \n\r, check to see if the string began with "RCV=". If yes, do
+    //  something. If no, discard it.
 
-        // When a remote module connects to us, we'll start to see a bunch of stuff.
-        //  Most of that is just overhead; we don't really care about it. All we
-        //  *really* care about is data, and data looks like this:
-        // RCV=20 char max msg\n\r
 
-        // The state machine for capturing that can be pretty easy: when we've read
-        //  in \n\r, check to see if the string began with "RCV=". If yes, do
-        //  something. If no, discard it.
-        
-        boolean done = false;
-        while (!done && Serial.available() > 0)
-        {
-            digitalWrite(11,HIGH);
-            inputBuffer.concat((char)Serial.read());
-            delay(200);
-            digitalWrite(11,LOW);
-            if (find_text(String("\n\r"), inputBuffer) != -1) {
-                done = true;
-            }
+    boolean done = false;
+    while (!done && Serial.available() > 0)
+    {
+        digitalWrite(11,HIGH);
+        inputBuffer.concat((char)Serial.read());
+        digitalWrite(11,LOW);
+        if (find_text(String("\n\r"), inputBuffer) != -1) {
+            done = true;
         }
+    }
 
-        // We'll probably see a lot of lines that end with \n\r- that's the default
-        //  line ending for all the connect info messages, for instance. We can
-        //  ignore all of them that don't start with "RCV=". Remember to clear your
-        //  String object after you find \n\r!!!
+    // We'll probably see a lot of lines that end with \n\r- that's the default
+    //  line ending for all the connect info messages, for instance. We can
+    //  ignore all of them that don't start with "RCV=". Remember to clear your
+    //  String object after you find \n\r!!!
+
+    int rcv_pos = find_text(String("RCV="), inputBuffer);
+    if (rcv_pos == -1) {
+        inputBuffer = "";
+    } else {
+        inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
         int line_end_pos = find_text(String("\n\r"), inputBuffer);
         inputBuffer.remove((unsigned int)line_end_pos);
-        int rcv_pos = find_text(String("RCV="), inputBuffer);
-        if (rcv_pos == -1) {
-            inputBuffer = "";
-        } else {
-            inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
-            #ifdef DEBUG
-            Serial.println(inputBuffer);
-            #endif
+        #ifdef DEBUG
+        Serial.println(inputBuffer);
+        #endif
             
-            if (inputBuffer == "LP1") {
-                    Serial.println("NAV SAYS LEFT");
-                    blink_left_arrow(10);
-            } else if (inputBuffer == "RP2") {
-                    Serial.println("NAV SAYS RIGHT");
-                    blink_right_arrow(10);
-            } else if (inputBuffer == "LP3") {
-                    Serial.println("NAV SAYS STRAIGHT");
-                    blink_top_arrow(10);
-                    delay(1000);
-            }
-        
-            fullBuffer += inputBuffer;
-            inputBuffer = "";
-            
+        if (inputBuffer == "LP1") {
+                Serial.println("NAV SAYS LEFT");
+                blink_left_arrow(10);
+        } else if (inputBuffer == "RP2") {
+                Serial.println("NAV SAYS RIGHT");
+                blink_right_arrow(10);
+        } else if (inputBuffer == "LP3") {
+                Serial.println("NAV SAYS STRAIGHT");
+                blink_top_arrow(10);
+                delay(1000);
         }
         
-        rightFlexReading = analogRead(RIGHTFLEXPIN);
-        //Serial.print("Right Flex Reading: ");
-        //Serial.println(rightFlexReading);
-        if (rightFlexReading > 530 && !turnSignalSent) {
-            Serial.flush();
-            sendBuffer.concat(BPRGHEADER);
-            sendBuffer.concat("2");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-            turnSignalSent = 1;
-        } else if (rightFlexReading < 530 && turnSignalSent) {
-            turnSignalSent = 0;
-        }
-        delay(500);
+        fullBuffer += inputBuffer;
+        inputBuffer = "";
+            
     }
-    return 0;
+        
+    rightFlexReading = analogRead(RIGHTFLEXPIN);
+    //Serial.print("Right Flex Reading: ");
+    //Serial.println(rightFlexReading);
+    if (rightFlexReading > 530 && !turnSignalSent) {
+        Serial.flush();
+        sendBuffer.concat(BPRGHEADER);
+        sendBuffer.concat("2");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+        turnSignalSent = 1;
+    } else if (rightFlexReading < 530 && turnSignalSent) {
+        turnSignalSent = 0;
+    }
+    delay(500);
 }
 
 // The default settings are good enough for the peripheral example; just to
