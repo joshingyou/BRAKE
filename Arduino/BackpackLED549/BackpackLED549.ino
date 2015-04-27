@@ -37,7 +37,7 @@ BLEMate2 BTModu(&Serial1);
 // This boolean determines whether we're going to do a central or peripheral
 //  example with this code.
 
-boolean central = true;
+boolean central = false;
 int counter = 0;
 int i = 0;
 
@@ -63,7 +63,7 @@ void loop()
   //doCentralExample(); // We're going to go to this function and never come
                         //  back, since we want to do the central connection
                         //  demo just once.
-  while(1);
+  //while(1);
   
 }
 
