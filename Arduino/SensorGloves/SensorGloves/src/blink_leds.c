@@ -49,3 +49,13 @@ void blink_top_arrow (unsigned int times)
         delay(500);
     }
 }
+
+void blink_indicator (unsigned int times)
+{
+    for (unsigned int loop = 0; loop < times; loop++) {
+        digitalWrite(11, HIGH);
+        delay(500);
+        digitalWrite(11, LOW);
+        delay(500);
+    }
+}
