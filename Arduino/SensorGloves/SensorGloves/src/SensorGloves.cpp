@@ -11,10 +11,7 @@ extern "C" {
 }
 #include "../lib/Arduino/Arduino.h"
 #include "../lib/SparkFun_BLEMate2/SparkFun_BLEMate2.h"
-#include <avr/io.h>
-#include <util/delay.h>
 
-String fullBuffer;
 String inputBuffer;
 String sendBuffer;
 
@@ -61,7 +58,7 @@ void do_flex_sensor_read_task();
 void do_led_blink_task();
 
 
-#define SERIAL_READ_TASK_PERIOD 50
+#define SERIAL_READ_TASK_PERIOD 1000
 #define FLEX_SENSOR_READ_TASK_PERIOD 100
 #define LED_BLINK_TASK_PERIOD 200
 
@@ -72,7 +69,6 @@ unsigned long led_blink_task_last_run = 0;
 
 void setup()
 {
-    init();
     setup_leds();
     
     Serial.begin(9600);           // This is the BC118 default baud rate.
@@ -185,7 +181,17 @@ void setup()
 
 int find_text(String needle, String haystack) {
     int foundpos = -1;
-    for (unsigned int i = (haystack.length() - needle.length() - 1); (i > 0); i--) {
+    for (int i = 0; (i < haystack.length() - needle.length()); i++) {
+        if (haystack.substring(i,needle.length()+i) == needle) {
+            foundpos = i;
+        }
+    }
+    return foundpos;
+}
+
+int reverse_find_text(String needle, String haystack) {
+    int foundpos = -1;
+    for (int i = (haystack.length() - needle.length()); (i >= 0); i--) {
         if (haystack.substring(i,needle.length()+i) == needle) {
             foundpos = i;
         }
@@ -208,21 +214,21 @@ void loop()
     main_loop_timer = millis();
     
     if (main_loop_timer > (serial_task_last_run + SERIAL_READ_TASK_PERIOD)) {
-        Serial.println("Serial runs");
+        //Serial.println("Serial runs");
         do_serial_task();
         
         serial_task_last_run = millis();
     }
 
     if (main_loop_timer > (flex_sensor_read_task_last_run + FLEX_SENSOR_READ_TASK_PERIOD)) {
-        Serial.println("Flex read runs");
+        //Serial.println("Flex read runs");
         do_flex_sensor_read_task();
         flex_sensor_read_task_last_run = millis();
     }
         
 
     if (main_loop_timer > (led_blink_task_last_run + LED_BLINK_TASK_PERIOD)) {
-        Serial.println("LED blink runs");
+        //Serial.println("LED blink runs");
         do_led_blink_task();
         led_blink_task_last_run = millis();
     }
@@ -269,25 +275,25 @@ void setupPeripheralExample()
 
 void do_serial_task()
 {
-    boolean done = false;
-    while (!done && Serial.available() > 0)
+    unsigned long serial_task_start = millis();
+    digitalWrite(11,HIGH);
+    while ((millis() - serial_task_start) < 500)
     {
-        digitalWrite(11,HIGH);
+        // Keep reading for 10 ms.
+        
         inputBuffer.concat((char)Serial.read());
-        digitalWrite(11,LOW);
-        if (find_text(String("\n\r"), inputBuffer) != -1) {
-            done = true;
-        }
+        
     }
+    digitalWrite(11,LOW);
+    //Serial.println(inputBuffer);
     // We'll probably see a lot of lines that end with \n\r- that's the default
     //  line ending for all the connect info messages, for instance. We can
     //  ignore all of them that don't start with "RCV=". Remember to clear your
     //  String object after you find \n\r!!!
 
     int rcv_pos = find_text(String("RCV="), inputBuffer);
-    if (rcv_pos == -1) {
-        inputBuffer = "";
-        } else {
+    if (rcv_pos != -1) {
+        left_arrow_on = true;
         inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
         int line_end_pos = find_text(String("\n\r"), inputBuffer);
         inputBuffer.remove((unsigned int)line_end_pos);
@@ -313,7 +319,7 @@ void do_serial_task()
             sendBuffer.concat("1");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "LP2") {
+        } else if (inputBuffer == "LP2") {
             Serial.println("TO LEFT GLOVE: NAV SAYS RIGHT");
             right_arrow_on = true;
             //do some ack stuff here
@@ -322,7 +328,7 @@ void do_serial_task()
             sendBuffer.concat("2");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "LP3") {
+        } else if (inputBuffer == "LP3") {
             Serial.println("TO LEFT GLOVE: NAV SAYS STRAIGHT");
             top_arrow_on = true;
             //do some ack stuff here
@@ -331,7 +337,7 @@ void do_serial_task()
             sendBuffer.concat("3");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
+        } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
             Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
             status_led_on = true;
             turnSignalSent = 0;
@@ -348,7 +354,7 @@ void do_serial_task()
             sendBuffer.concat("1");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "RP2") {
+        } else if (inputBuffer == "RP2") {
             Serial.println("TO RIGHT GLOVE: NAV SAYS RIGHT");
             blink_right_arrow(10);
             //do some ack stuff here
@@ -357,7 +363,7 @@ void do_serial_task()
             sendBuffer.concat("2");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "RP3") {
+        } else if (inputBuffer == "RP3") {
             Serial.println("TO RIGHT GLOVE: NAV SAYS STRAIGHT");
             blink_top_arrow(10);
             //do some ack stuff here
@@ -366,16 +372,16 @@ void do_serial_task()
             sendBuffer.concat("3");
             BTModu.sendData(sendBuffer);
             sendBuffer = "";
-            } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
+        } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
             Serial.println("TO RIGHT GLOVE: BACKPACK KNOWS WHAT'S UP");
             blink_indicator(10);
             turnSignalSent = 0;
         }
         #endif
-
-        fullBuffer += inputBuffer;
+        
         inputBuffer = "";
-        sendBuffer = "";
+    } else {
+        inputBuffer = "";
     }
 }
 
@@ -386,15 +392,15 @@ void do_flex_sensor_read_task()
     leftThumbReading = analogRead(LEFTTHUMBPIN);
     leftIndexReading = analogRead(LEFTINDEXPIN);
     leftMiddleReading = analogRead(LEFTMIDDLEPIN);
-    Serial.println("Right Flex Reading (T, I, M): ");
-    Serial.println(leftThumbReading);
-    Serial.println(leftIndexReading);
-    Serial.println(leftMiddleReading);
+    //Serial.println("Right Flex Reading (T, I, M): ");
+    //Serial.println(leftThumbReading);
+    //Serial.println(leftIndexReading);
+    //Serial.println(leftMiddleReading);
     if ((leftThumbReading > 530) && (leftIndexReading > 530) && (leftMiddleReading > 530) && (turnSignalSent == 0)) {
-        Serial.flush();
+        //Serial.flush();
         sendBuffer.concat(BPLGHEADER);
         sendBuffer.concat("1");
-        BTModu.sendData(sendBuffer);
+        //BTModu.sendData(sendBuffer);
         sendBuffer = "";
         turnSignalSent = 1;
     }
@@ -404,10 +410,10 @@ void do_flex_sensor_read_task()
     rightThumbReading = analogRead(RIGHTTHUMBPIN);
     rightIndexReading = analogRead(RIGHTINDEXPIN);
     rightMiddleReading = analogRead(RIGHTMIDDLEPIN);
-    Serial.println("Right Flex Reading (T, I, M): ");
-    Serial.println(rightThumbReading);
-    Serial.println(rightIndexReading);
-    Serial.println(rightMiddleReading);
+    //Serial.println("Right Flex Reading (T, I, M): ");
+    //Serial.println(rightThumbReading);
+    //Serial.println(rightIndexReading);
+    //Serial.println(rightMiddleReading);
     if ((rightThumbReading > 530) && (rightIndexReading > 530) && (rightMiddleReading > 530) && (turnSignalSent == 0)) {
         Serial.flush();
         sendBuffer.concat(BPRGHEADER);
@@ -423,14 +429,25 @@ void do_led_blink_task()
 {
     if (left_arrow_on) {
         blink_left_arrow();
+    } else {
+        turn_off_left_arrow();
     }
+    
     if (right_arrow_on) {
         blink_right_arrow();
+    } else {
+        turn_off_right_arrow();
     }
+    
     if (top_arrow_on) {
         blink_top_arrow();
+    } else {
+        turn_off_top_arrow();
     }
+    
     if (status_led_on) {
         blink_status_led();
+    } else {
+        turn_off_status_led();
     }
 }
