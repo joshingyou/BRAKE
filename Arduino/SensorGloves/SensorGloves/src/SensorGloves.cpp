@@ -59,8 +59,8 @@ void do_led_blink_task();
 
 
 #define SERIAL_READ_TASK_PERIOD 1000
-#define FLEX_SENSOR_READ_TASK_PERIOD 100
-#define LED_BLINK_TASK_PERIOD 200
+#define FLEX_SENSOR_READ_TASK_PERIOD 500
+#define LED_BLINK_TASK_PERIOD 500
 
 unsigned long serial_task_last_run = 0;
 unsigned long flex_sensor_read_task_last_run = 0;
@@ -201,33 +201,20 @@ int reverse_find_text(String needle, String haystack) {
 
 void loop()
 {
-    // When a remote module connects to us, we'll start to see a bunch of stuff.
-    //  Most of that is just overhead; we don't really care about it. All we
-    //  *really* care about is data, and data looks like this:
-    // RCV=20 char max msg\n\r
-
-    // The state machine for capturing that can be pretty easy: when we've read
-    //  in \n\r, check to see if the string began with "RCV=". If yes, do
-    //  something. If no, discard it.
-
-    static unsigned long main_loop_timer;
-    main_loop_timer = millis();
-    
-    if (main_loop_timer > (serial_task_last_run + SERIAL_READ_TASK_PERIOD)) {
+    if (millis() > (serial_task_last_run + SERIAL_READ_TASK_PERIOD)) {
         //Serial.println("Serial runs");
         do_serial_task();
-        
         serial_task_last_run = millis();
     }
 
-    if (main_loop_timer > (flex_sensor_read_task_last_run + FLEX_SENSOR_READ_TASK_PERIOD)) {
+    if (millis() > (flex_sensor_read_task_last_run + FLEX_SENSOR_READ_TASK_PERIOD)) {
         //Serial.println("Flex read runs");
         do_flex_sensor_read_task();
         flex_sensor_read_task_last_run = millis();
     }
         
 
-    if (main_loop_timer > (led_blink_task_last_run + LED_BLINK_TASK_PERIOD)) {
+    if (millis() > (led_blink_task_last_run + LED_BLINK_TASK_PERIOD)) {
         //Serial.println("LED blink runs");
         do_led_blink_task();
         led_blink_task_last_run = millis();
@@ -275,32 +262,40 @@ void setupPeripheralExample()
 
 void do_serial_task()
 {
-    unsigned long serial_task_start = millis();
+    //unsigned long serial_task_start = millis();
     digitalWrite(11,HIGH);
-    while ((millis() - serial_task_start) < 500)
-    {
-        // Keep reading for 10 ms.
-        
+    //while ((millis() - serial_task_start) < 500)
+    while (Serial.available() > 0)
+    {        
         inputBuffer.concat((char)Serial.read());
-        
+        delay(50);
     }
     digitalWrite(11,LOW);
     //Serial.println(inputBuffer);
-    // We'll probably see a lot of lines that end with \n\r- that's the default
-    //  line ending for all the connect info messages, for instance. We can
-    //  ignore all of them that don't start with "RCV=". Remember to clear your
-    //  String object after you find \n\r!!!
+    // When a remote module connects to us, we'll start to see a bunch of stuff.
+    // Most of that is just overhead; we don't really care about it. All we
+    // *really* care about is data, and data looks like this:
+    // RCV=20 char max msg\n\r
 
-    int rcv_pos = find_text(String("RCV="), inputBuffer);
-    if (rcv_pos != -1) {
-        left_arrow_on = true;
-        inputBuffer.remove(rcv_pos,4); // Remove RCV= from front.
-        int line_end_pos = find_text(String("\n\r"), inputBuffer);
-        inputBuffer.remove((unsigned int)line_end_pos);
-        #ifdef DEBUG
-        Serial.println(inputBuffer);
-        #endif
-        
+    // The state machine for capturing that can be pretty easy: when we've read
+    // in \n\r, check to see if the string began with "RCV=". If yes, do
+    // something. If no, discard it.
+
+    if (inputBuffer.endsWith("\n\r")) {
+        if (inputBuffer.startsWith("RCV=")) {
+            inputBuffer.trim();
+            inputBuffer.remove(0, 4);
+            Serial.println(inputBuffer);
+            left_arrow_on = true;
+            inputBuffer = "";
+        } else {
+            inputBuffer = "";
+        }
+    } else {
+        inputBuffer = "";
+    }
+    
+        /*
 
         // what kind of messages go to glove? navigation, ack from backpack,
         // check if the input buffer is intended for the left or right glove
@@ -383,6 +378,7 @@ void do_serial_task()
     } else {
         inputBuffer = "";
     }
+    */
 }
 
 void do_flex_sensor_read_task()
