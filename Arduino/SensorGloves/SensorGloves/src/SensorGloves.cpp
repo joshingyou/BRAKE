@@ -344,7 +344,7 @@ parse_message:
         sendBuffer.concat("4");
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
-    } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
+    } else if (inputBuffer.startsWith("LB1") || inputBuffer.startsWith("LB2") || inputBuffer.startsWith("LB3")) {
         Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
         status_led_on = true;
         turnSignalSent = 0;
@@ -398,11 +398,11 @@ void do_flex_sensor_read_task()
     //Serial.println(leftThumbReading);
     //Serial.println(leftIndexReading);
     //Serial.println(leftMiddleReading);
-    if ((leftThumbReading > 530) && (leftIndexReading > 530) && (leftMiddleReading > 530) && (turnSignalSent == 0)) {
+    if ((leftThumbReading > 520) && (leftIndexReading > 520) && (leftMiddleReading > 520) && (turnSignalSent == 0)) {
         //Serial.flush();
         sendBuffer.concat(BPLGHEADER);
         sendBuffer.concat("1");
-        //BTModu.sendData(sendBuffer);
+        BTModu.sendData(sendBuffer);
         sendBuffer = "";
         turnSignalSent = 1;
     }

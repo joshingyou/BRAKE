@@ -121,7 +121,7 @@ void do_serial_task()
         show_stop_sign = false;
         //do some ack stuff here
         Serial.flush();
-        sendBuffer.concat("BL1");
+        sendBuffer.concat("LB1");
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
         } else if (inputBuffer.startsWith("BR2")) {
@@ -131,17 +131,17 @@ void do_serial_task()
         show_stop_sign = false;
         //do some ack stuff here
         Serial.flush();
-        sendBuffer.concat("BR2");
+        sendBuffer.concat("RB2");
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
         } else if (inputBuffer.startsWith("BL3")) {
-        Serial.println("TO BACKPACK: DON'T SHOW RIGHT TURN SIGNAL");
+        Serial.println("TO BACKPACK: SHOW STOP SIGN");
         show_left_arrow = false;
         show_right_arrow = false;
         show_stop_sign = true;
         //do some ack stuff here
         Serial.flush();
-        sendBuffer.concat("BL3");
+        sendBuffer.concat("LB3");
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
     }
@@ -249,6 +249,7 @@ void initBluetooth()
             Serial.println("Second module reset error!");
             } else {
             Serial.println("Reset/Restore/Write Config PASSED...");
+            break;
         }
         #endif
     }
@@ -265,88 +266,66 @@ void do_matrix_draw_task()
 {
     if (show_left_arrow) {
         drawMatrix(1);
-    } else {
-        drawMatrix(-1);
-    }
-    
-    if (show_right_arrow) {
+    } else if (show_right_arrow) {
         drawMatrix(2);
-        } else {
-        drawMatrix(-1);
-    }
-    
-    if (show_stop_sign) {
+    } else if (show_stop_sign) {
         drawMatrix(3);
-        } else {
+    } else {        
         drawMatrix(-1);
     }
 }
 
 void drawMatrix(int msgNum)
 {
-    switch (msgNum) {
-        case 1:
-        //turn left
+    static unsigned long matrix_last_updated = 0;
+    static boolean matrix_on = false;
+    static boolean done_drawing = false;
 
-        //draw a left arrow
-        //horiz line
-        for (int i = 0; i < 3; i++) {
-            matrix.drawLine(27, 15, 5, 15, matrix.Color333(4, 7, 5));
-            matrix.drawLine(16, 4, 6, 14, matrix.Color333(4, 7, 5));
-            matrix.drawLine(16, 26, 6, 16, matrix.Color333(4, 7, 5));
-            delay(500);
-            
-            matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-            delay(500);
-        }
-        break;
-        case 2:
-        //turn right
-        //draw a right arrow
-        //horiz line
-        for (int i = 0; i < 3; i++) {
-            matrix.drawLine(5, 15, 27, 15, matrix.Color333(4, 7, 5));
-            matrix.drawLine(16, 4, 26, 14, matrix.Color333(4, 7, 5));
-            matrix.drawLine(16, 26, 26, 16, matrix.Color333(4, 7, 5));
-            delay(500);
-            
-            matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-            delay(500);
-        }
-
-        break;
+    if ((!matrix_on) && ((millis() - matrix_last_updated) > 500)) {
+        if (!done_drawing) {
+            switch (msgNum) {
+                case 1:
+                //turn left, draw a left arrow and a horizontal line
+                    matrix.drawLine(27, 15, 5, 15, matrix.Color333(4, 7, 5));
+                    matrix.drawLine(16, 4, 6, 14, matrix.Color333(4, 7, 5));
+                    matrix.drawLine(16, 26, 6, 16, matrix.Color333(4, 7, 5));
+                    done_drawing = true;
+                    break;
+                case 2:
+                //turn right, draw a right arrow and a horizontal line
+                    matrix.drawLine(5, 15, 27, 15, matrix.Color333(4, 7, 5));
+                    matrix.drawLine(16, 4, 26, 14, matrix.Color333(4, 7, 5));
+                    matrix.drawLine(16, 26, 26, 16, matrix.Color333(4, 7, 5));
+                    done_drawing = true;
+                    break;
+                case 3:
+                //draw a stop sign
+                    matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));
         
-        case 3:
-        for (int i = 0; i < 3; i++) {
-            //draw a stop sign
-            matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));
-            
-            //STOP text
-            matrix.setCursor(4, 12);
-            matrix.setTextSize(1);
-            matrix.setTextColor(matrix.Color333(0, 0, 0));
-            
-            matrix.print("S");
-            matrix.print("T");
-            matrix.print("O");
-            matrix.print("P");
-            delay(3000);
-            
-            matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
-            delay(500);
-            
-        }
-        break;
+                    //STOP text
+                    matrix.setCursor(4, 12);
+                    matrix.setTextSize(1);
+                    matrix.setTextColor(matrix.Color333(0, 0, 0));
         
-        default:
-            matrix.begin();
-            matrix.setCursor(7, 0);
-            matrix.setTextSize(1);
-            matrix.setTextColor(matrix.Color333(7, 7, 7));
-            
-            matrix.print(" ");
-            break;
-
+                    //matrix.print("S"); matrix.print("T"); matrix.print("O"); matrix.print("P");
+                    matrix.print("STOP");
+                    done_drawing = true;
+                    break;
+                default:
+                    matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
+                    done_drawing = true;
+                    break;
+            }
+        }        
+        matrix_on = true;
+        matrix_last_updated = millis();
+    }
+        
+    if (matrix_on && ((millis() - matrix_last_updated) > 200)) {
+        matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
+        done_drawing = false;
+        matrix_on = false;
+        matrix_last_updated = millis();
     }
 }
 
