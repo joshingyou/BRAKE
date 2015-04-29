@@ -285,9 +285,10 @@ void do_serial_task()
         if (inputBuffer.startsWith("RCV=")) {
             inputBuffer.trim();
             inputBuffer.remove(0, 4);
-            Serial.println(inputBuffer);
-            left_arrow_on = true;
-            inputBuffer = "";
+            //Serial.println(inputBuffer);
+            //left_arrow_on = true;
+            //inputBuffer = "";
+            goto parse_message;
         } else {
             inputBuffer = "";
         }
@@ -295,90 +296,95 @@ void do_serial_task()
         inputBuffer = "";
     }
     
-        /*
+parse_message:
 
-        // what kind of messages go to glove? navigation, ack from backpack,
-        // check if the input buffer is intended for the left or right glove
-        // check if the message is coming from the phone or backpack
-        // then check flex sensors for any special readings for sending to backpack
+    // what kind of messages go to glove? navigation, ack from backpack,
+    // check if the input buffer is intended for the left or right glove
+    // check if the message is coming from the phone or backpack
+    // then check flex sensors for any special readings for sending to backpack
 
-        //for acknowledgement: if there's already been an acknowledgment for
+    //for acknowledgement: if there's already been an acknowledgment for
         
-        #ifdef LEFTGLOVE
-        if (inputBuffer == "LP1") {
-            Serial.println("TO LEFT GLOVE: NAV SAYS LEFT");
-            left_arrow_on = true;
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PLGHEADER);
-            sendBuffer.concat("1");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "LP2") {
-            Serial.println("TO LEFT GLOVE: NAV SAYS RIGHT");
-            right_arrow_on = true;
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PLGHEADER);
-            sendBuffer.concat("2");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "LP3") {
-            Serial.println("TO LEFT GLOVE: NAV SAYS STRAIGHT");
-            top_arrow_on = true;
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PLGHEADER);
-            sendBuffer.concat("3");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
-            Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
-            status_led_on = true;
-            turnSignalSent = 0;
-        }
-        #endif
+    #ifdef LEFTGLOVE
+    if (inputBuffer.startsWith("LP1")) {
+        Serial.println("TO LEFT GLOVE: NAV SAYS LEFT");
+        left_arrow_on = true;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PLGHEADER);
+        sendBuffer.concat("1");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+      
+    } else if (inputBuffer.startsWith("LP2")) {
+        Serial.println("TO LEFT GLOVE: NAV SAYS RIGHT");
+        right_arrow_on = true;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PLGHEADER);
+        sendBuffer.concat("2");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer.startsWith("LP3")) {
+        Serial.println("TO LEFT GLOVE: NAV SAYS STRAIGHT");
+        top_arrow_on = true;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PLGHEADER);
+        sendBuffer.concat("3");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer.startsWith("LP4")) {
+        left_arrow_on = false;
+        right_arrow_on = false;
+        top_arrow_on = false;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PLGHEADER);
+        sendBuffer.concat("4");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer == "LB1" || inputBuffer == "LB2" || inputBuffer == "LB3") {
+        Serial.println("TO LEFT GLOVE: BACKPACK KNOWS WHAT'S UP");
+        status_led_on = true;
+        turnSignalSent = 0;
+    } 
+    #endif
 
-        #ifdef RIGHTGLOVE
-        if (inputBuffer == "RP1") {
-            Serial.println("TO RIGHT GLOVE: NAV SAYS LEFT");
+    #ifdef RIGHTGLOVE
+    if (inputBuffer == "RP1") {
+        Serial.println("TO RIGHT GLOVE: NAV SAYS LEFT");
             
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PRGHEADER);
-            sendBuffer.concat("1");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "RP2") {
-            Serial.println("TO RIGHT GLOVE: NAV SAYS RIGHT");
-            blink_right_arrow(10);
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PRGHEADER);
-            sendBuffer.concat("2");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "RP3") {
-            Serial.println("TO RIGHT GLOVE: NAV SAYS STRAIGHT");
-            blink_top_arrow(10);
-            //do some ack stuff here
-            Serial.flush();
-            sendBuffer.concat(PRGHEADER);
-            sendBuffer.concat("3");
-            BTModu.sendData(sendBuffer);
-            sendBuffer = "";
-        } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
-            Serial.println("TO RIGHT GLOVE: BACKPACK KNOWS WHAT'S UP");
-            blink_indicator(10);
-            turnSignalSent = 0;
-        }
-        #endif
-        
-        inputBuffer = "";
-    } else {
-        inputBuffer = "";
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PRGHEADER);
+        sendBuffer.concat("1");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer == "RP2") {
+        Serial.println("TO RIGHT GLOVE: NAV SAYS RIGHT");
+        blink_right_arrow(10);
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PRGHEADER);
+        sendBuffer.concat("2");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer == "RP3") {
+        Serial.println("TO RIGHT GLOVE: NAV SAYS STRAIGHT");
+        blink_top_arrow(10);
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat(PRGHEADER);
+        sendBuffer.concat("3");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer == "RB1" || inputBuffer == "RB2" || inputBuffer == "RB3") {
+        Serial.println("TO RIGHT GLOVE: BACKPACK KNOWS WHAT'S UP");
+        blink_indicator(10);
+        turnSignalSent = 0;
     }
-    */
+    #endif
 }
 
 void do_flex_sensor_read_task()

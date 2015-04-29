@@ -18,7 +18,7 @@
 #define D   A3
 
 void setup();
-void doCentralExample();
+void loop();
 
 
 #endif /* BACKPACKLED_H_ */

@@ -267,19 +267,7 @@ Discarded input sections
  .data          0x00000000        0x0 lib/Arduino/new.o
  .bss           0x00000000        0x0 lib/Arduino/new.o
  .text._Znwj    0x00000000        0x4 lib/Arduino/new.o
- .text._Znaj    0x00000000        0x4 lib/Arduino/new.o
- .text._ZdlPv   0x00000000        0x4 lib/Arduino/new.o
  .text._ZdaPv   0x00000000        0x4 lib/Arduino/new.o
- .debug_info    0x00000000      0x18c lib/Arduino/new.o
- .debug_abbrev  0x00000000       0xd9 lib/Arduino/new.o
- .debug_loc     0x00000000       0x98 lib/Arduino/new.o
- .debug_aranges
-                0x00000000       0x38 lib/Arduino/new.o
- .debug_ranges  0x00000000       0x28 lib/Arduino/new.o
- .debug_line    0x00000000      0x164 lib/Arduino/new.o
- .debug_str     0x00000000      0x19f lib/Arduino/new.o
- .comment       0x00000000       0x31 lib/Arduino/new.o
- .debug_frame   0x00000000       0x54 lib/Arduino/new.o
  .group         0x00000000        0x8 lib/Arduino/Print.o
  .group         0x00000000        0x8 lib/Arduino/Print.o
  .text          0x00000000        0x0 lib/Arduino/Print.o
@@ -290,6 +278,8 @@ Discarded input sections
  .text._ZN5Print5printERK9Printable
                 0x00000000       0x14 lib/Arduino/Print.o
  .text._ZN5Print7printlnEPK19__FlashStringHelper
+                0x00000000       0x24 lib/Arduino/Print.o
+ .text._ZN5Print7printlnERK6String
                 0x00000000       0x24 lib/Arduino/Print.o
  .text._ZN5Print7printlnEc
                 0x00000000       0x24 lib/Arduino/Print.o
@@ -493,10 +483,6 @@ Discarded input sections
  .text.ultoa    0x00000000        0x4 lib/Arduino/WString.o
  .text._ZN6String4copyEPK19__FlashStringHelperj
                 0x00000000       0x42 lib/Arduino/WString.o
- .text._ZN6StringaSERKS_
-                0x00000000       0x2e lib/Arduino/WString.o
- .text._ZN6StringC2ERKS_
-                0x00000000       0x12 lib/Arduino/WString.o
  .text._ZN6StringC2Ec
                 0x00000000       0x30 lib/Arduino/WString.o
  .text._ZN6StringC2Ehh
@@ -535,10 +521,6 @@ Discarded input sections
                 0x00000000       0x64 lib/Arduino/WString.o
  .text._ZN6String6concatEPK19__FlashStringHelper
                 0x00000000       0x5e lib/Arduino/WString.o
- .text._ZplRK15StringSumHelperRK6String
-                0x00000000       0x26 lib/Arduino/WString.o
- .text._ZplRK15StringSumHelperPKc
-                0x00000000       0x34 lib/Arduino/WString.o
  .text._ZplRK15StringSumHelperc
                 0x00000000       0x1c lib/Arduino/WString.o
  .text._ZplRK15StringSumHelperh
@@ -561,8 +543,6 @@ Discarded input sections
                 0x00000000       0x60 lib/Arduino/WString.o
  .text._ZNK6String6equalsERKS_
                 0x00000000       0x26 lib/Arduino/WString.o
- .text._ZNK6String6equalsEPKc
-                0x00000000       0x3e lib/Arduino/WString.o
  .text._ZNK6StringltERKS_
                 0x00000000        0xe lib/Arduino/WString.o
  .text._ZNK6StringgtERKS_
@@ -577,12 +557,6 @@ Discarded input sections
                 0x00000000       0x1c lib/Arduino/WString.o
  .text._ZN6StringixEj
                 0x00000000       0x24 lib/Arduino/WString.o
- .text._ZNK6StringixEj
-                0x00000000       0x22 lib/Arduino/WString.o
- .text._ZNK6String6charAtEj
-                0x00000000        0x4 lib/Arduino/WString.o
- .text._ZNK6String8getBytesEPhjj
-                0x00000000       0x54 lib/Arduino/WString.o
  .text._ZNK6String7indexOfEcj
                 0x00000000       0x34 lib/Arduino/WString.o
  .text._ZNK6String7indexOfEc
@@ -667,12 +641,6 @@ Discarded input sections
                 0x00000000       0x6e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
  .text._ZN8BLEMate211stdGetParamE6StringRS0_
                 0x00000000      0x1e6 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .text._ZN8BLEMate29amCentralERb
-                0x00000000      0x1c4 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .text._ZN8BLEMate28sendDataEPch
-                0x00000000      0x12c lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .text._ZN8BLEMate28sendDataER6String
-                0x00000000       0x58 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
  .text._ZN8BLEMate28sendDataEPKc
                 0x00000000       0x4a lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
  .text          0x00000000        0x0 src/blink_leds.o
@@ -1349,7 +1317,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x2274
+.text           0x00000000     0x2896
  *(.vectors)
  .vectors       0x00000000       0x68 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5/crtm328.o
                 0x00000000                __vector_default
@@ -1494,249 +1462,284 @@ END GROUP
                 0x000004e0                _ZNK9IPAddress7printToER5Print
  .text.startup._GLOBAL__sub_I__ZN9IPAddressC2Ev
                 0x00000554       0x1e lib/Arduino/IPAddress.o
+ .text._Znaj    0x00000572        0x4 lib/Arduino/new.o
+                0x00000572                _Znaj
+ .text._ZdlPv   0x00000576        0x4 lib/Arduino/new.o
+                0x00000576                _ZdlPv
  .text._ZN5Print5writeEPKhj
-                0x00000572       0x50 lib/Arduino/Print.o
-                0x00000572                _ZN5Print5writeEPKhj
+                0x0000057a       0x50 lib/Arduino/Print.o
+                0x0000057a                _ZN5Print5writeEPKhj
  .text._ZN5Print5writeEPKc
-                0x000005c2       0x2c lib/Arduino/Print.o
-                0x000005c2                _ZN5Print5writeEPKc
+                0x000005ca       0x2c lib/Arduino/Print.o
+                0x000005ca                _ZN5Print5writeEPKc
  .text._ZN5Print5printERK6String
-                0x000005ee       0x1c lib/Arduino/Print.o
-                0x000005ee                _ZN5Print5printERK6String
+                0x000005f6       0x1c lib/Arduino/Print.o
+                0x000005f6                _ZN5Print5printERK6String
  .text._ZN5Print5printEPKc
-                0x0000060a        0x4 lib/Arduino/Print.o
-                0x0000060a                _ZN5Print5printEPKc
+                0x00000612        0x4 lib/Arduino/Print.o
+                0x00000612                _ZN5Print5printEPKc
  .text._ZN5Print5printEc
-                0x0000060e        0xe lib/Arduino/Print.o
-                0x0000060e                _ZN5Print5printEc
+                0x00000616        0xe lib/Arduino/Print.o
+                0x00000616                _ZN5Print5printEc
  .text._ZN5Print7printlnEv
-                0x0000061c       0x28 lib/Arduino/Print.o
-                0x0000061c                _ZN5Print7printlnEv
- .text._ZN5Print7printlnERK6String
-                0x00000644       0x24 lib/Arduino/Print.o
-                0x00000644                _ZN5Print7printlnERK6String
+                0x00000624       0x28 lib/Arduino/Print.o
+                0x00000624                _ZN5Print7printlnEv
  .text._ZN5Print7printlnEPKc
-                0x00000668       0x24 lib/Arduino/Print.o
-                0x00000668                _ZN5Print7printlnEPKc
+                0x0000064c       0x24 lib/Arduino/Print.o
+                0x0000064c                _ZN5Print7printlnEPKc
  .text._ZN5Print11printNumberEmh
-                0x0000068c       0xb2 lib/Arduino/Print.o
-                0x0000068c                _ZN5Print11printNumberEmh
+                0x00000670       0xb2 lib/Arduino/Print.o
+                0x00000670                _ZN5Print11printNumberEmh
  .text._ZN5Print5printEmi
-                0x0000073e       0x1a lib/Arduino/Print.o
-                0x0000073e                _ZN5Print5printEmi
+                0x00000722       0x1a lib/Arduino/Print.o
+                0x00000722                _ZN5Print5printEmi
  .text._ZN5Print5printEhi
-                0x00000758        0xe lib/Arduino/Print.o
-                0x00000758                _ZN5Print5printEhi
+                0x0000073c        0xe lib/Arduino/Print.o
+                0x0000073c                _ZN5Print5printEhi
  .text._Z12disableTimerh
-                0x00000766       0x40 lib/Arduino/Tone.o
-                0x00000766                _Z12disableTimerh
+                0x0000074a       0x40 lib/Arduino/Tone.o
+                0x0000074a                _Z12disableTimerh
  .text._Z6noToneh
-                0x000007a6       0x2a lib/Arduino/Tone.o
-                0x000007a6                _Z6noToneh
+                0x0000078a       0x2a lib/Arduino/Tone.o
+                0x0000078a                _Z6noToneh
  .text.__vector_7
-                0x000007d0       0xb8 lib/Arduino/Tone.o
-                0x000007d0                __vector_7
+                0x000007b4       0xb8 lib/Arduino/Tone.o
+                0x000007b4                __vector_7
  .text.__vector_1
-                0x00000888       0x5a lib/Arduino/WInterrupts.o
-                0x00000888                __vector_1
+                0x0000086c       0x5a lib/Arduino/WInterrupts.o
+                0x0000086c                __vector_1
  .text.__vector_2
-                0x000008e2       0x5a lib/Arduino/WInterrupts.o
-                0x000008e2                __vector_2
+                0x000008c6       0x5a lib/Arduino/WInterrupts.o
+                0x000008c6                __vector_2
  .text.__vector_16
-                0x0000093c       0x94 lib/Arduino/wiring.o
-                0x0000093c                __vector_16
- .text.millis   0x000009d0       0x18 lib/Arduino/wiring.o
-                0x000009d0                millis
- .text.micros   0x000009e8       0x46 lib/Arduino/wiring.o
-                0x000009e8                micros
- .text.delay    0x00000a2e       0x50 lib/Arduino/wiring.o
-                0x00000a2e                delay
- .text.init     0x00000a7e       0x76 lib/Arduino/wiring.o
-                0x00000a7e                init
+                0x00000920       0x94 lib/Arduino/wiring.o
+                0x00000920                __vector_16
+ .text.millis   0x000009b4       0x18 lib/Arduino/wiring.o
+                0x000009b4                millis
+ .text.micros   0x000009cc       0x46 lib/Arduino/wiring.o
+                0x000009cc                micros
+ .text.delay    0x00000a12       0x50 lib/Arduino/wiring.o
+                0x00000a12                delay
+ .text.init     0x00000a62       0x76 lib/Arduino/wiring.o
+                0x00000a62                init
  .text.analogRead
-                0x00000af4       0x3a lib/Arduino/wiring_analog.o
-                0x00000af4                analogRead
+                0x00000ad8       0x3a lib/Arduino/wiring_analog.o
+                0x00000ad8                analogRead
  .text.turnOffPWM
-                0x00000b2e       0x52 lib/Arduino/wiring_digital.o
- .text.pinMode  0x00000b80       0x72 lib/Arduino/wiring_digital.o
-                0x00000b80                pinMode
+                0x00000b12       0x52 lib/Arduino/wiring_digital.o
+ .text.pinMode  0x00000b64       0x72 lib/Arduino/wiring_digital.o
+                0x00000b64                pinMode
  .text.digitalWrite
-                0x00000bf2       0x6c lib/Arduino/wiring_digital.o
-                0x00000bf2                digitalWrite
+                0x00000bd6       0x6c lib/Arduino/wiring_digital.o
+                0x00000bd6                digitalWrite
  .text._ZN6StringD2Ev
-                0x00000c5e        0xa lib/Arduino/WString.o
-                0x00000c5e                _ZN6StringD2Ev
-                0x00000c5e                _ZN6StringD1Ev
+                0x00000c42        0xa lib/Arduino/WString.o
+                0x00000c42                _ZN6StringD2Ev
+                0x00000c42                _ZN6StringD1Ev
  .text._ZN6String10invalidateEv
-                0x00000c68       0x24 lib/Arduino/WString.o
-                0x00000c68                _ZN6String10invalidateEv
+                0x00000c4c       0x24 lib/Arduino/WString.o
+                0x00000c4c                _ZN6String10invalidateEv
  .text._ZN6String12changeBufferEj
-                0x00000c8c       0x34 lib/Arduino/WString.o
-                0x00000c8c                _ZN6String12changeBufferEj
+                0x00000c70       0x34 lib/Arduino/WString.o
+                0x00000c70                _ZN6String12changeBufferEj
  .text._ZN6String7reserveEj
-                0x00000cc0       0x38 lib/Arduino/WString.o
-                0x00000cc0                _ZN6String7reserveEj
+                0x00000ca4       0x38 lib/Arduino/WString.o
+                0x00000ca4                _ZN6String7reserveEj
  .text._ZN6String4copyEPKcj
-                0x00000cf8       0x42 lib/Arduino/WString.o
-                0x00000cf8                _ZN6String4copyEPKcj
+                0x00000cdc       0x42 lib/Arduino/WString.o
+                0x00000cdc                _ZN6String4copyEPKcj
  .text._ZN6StringC2EPKc
-                0x00000d3a       0x2c lib/Arduino/WString.o
-                0x00000d3a                _ZN6StringC2EPKc
-                0x00000d3a                _ZN6StringC1EPKc
+                0x00000d1e       0x2c lib/Arduino/WString.o
+                0x00000d1e                _ZN6StringC2EPKc
+                0x00000d1e                _ZN6StringC1EPKc
+ .text._ZN6StringaSERKS_
+                0x00000d4a       0x2e lib/Arduino/WString.o
+                0x00000d4a                _ZN6StringaSERKS_
+ .text._ZN6StringC2ERKS_
+                0x00000d78       0x12 lib/Arduino/WString.o
+                0x00000d78                _ZN6StringC2ERKS_
+                0x00000d78                _ZN6StringC1ERKS_
  .text._ZN6StringaSEPKc
-                0x00000d66       0x30 lib/Arduino/WString.o
-                0x00000d66                _ZN6StringaSEPKc
+                0x00000d8a       0x30 lib/Arduino/WString.o
+                0x00000d8a                _ZN6StringaSEPKc
  .text._ZN6String6concatEPKcj
-                0x00000d96       0x58 lib/Arduino/WString.o
-                0x00000d96                _ZN6String6concatEPKcj
+                0x00000dba       0x58 lib/Arduino/WString.o
+                0x00000dba                _ZN6String6concatEPKcj
  .text._ZN6String6concatEPKc
-                0x00000dee       0x20 lib/Arduino/WString.o
-                0x00000dee                _ZN6String6concatEPKc
+                0x00000e12       0x20 lib/Arduino/WString.o
+                0x00000e12                _ZN6String6concatEPKc
  .text._ZN6String6concatEc
-                0x00000e0e       0x26 lib/Arduino/WString.o
-                0x00000e0e                _ZN6String6concatEc
+                0x00000e32       0x26 lib/Arduino/WString.o
+                0x00000e32                _ZN6String6concatEc
+ .text._ZplRK15StringSumHelperRK6String
+                0x00000e58       0x26 lib/Arduino/WString.o
+                0x00000e58                _ZplRK15StringSumHelperRK6String
+ .text._ZplRK15StringSumHelperPKc
+                0x00000e7e       0x34 lib/Arduino/WString.o
+                0x00000e7e                _ZplRK15StringSumHelperPKc
+ .text._ZNK6String6equalsEPKc
+                0x00000eb2       0x3e lib/Arduino/WString.o
+                0x00000eb2                _ZNK6String6equalsEPKc
  .text._ZNK6String10startsWithERKS_j
-                0x00000e34       0x48 lib/Arduino/WString.o
-                0x00000e34                _ZNK6String10startsWithERKS_j
+                0x00000ef0       0x48 lib/Arduino/WString.o
+                0x00000ef0                _ZNK6String10startsWithERKS_j
  .text._ZNK6String10startsWithERKS_
-                0x00000e7c       0x1e lib/Arduino/WString.o
-                0x00000e7c                _ZNK6String10startsWithERKS_
+                0x00000f38       0x1e lib/Arduino/WString.o
+                0x00000f38                _ZNK6String10startsWithERKS_
  .text._ZNK6String8endsWithERKS_
-                0x00000e9a       0x42 lib/Arduino/WString.o
-                0x00000e9a                _ZNK6String8endsWithERKS_
+                0x00000f56       0x42 lib/Arduino/WString.o
+                0x00000f56                _ZNK6String8endsWithERKS_
+ .text._ZNK6StringixEj
+                0x00000f98       0x22 lib/Arduino/WString.o
+                0x00000f98                _ZNK6StringixEj
+ .text._ZNK6String6charAtEj
+                0x00000fba        0x4 lib/Arduino/WString.o
+                0x00000fba                _ZNK6String6charAtEj
+ .text._ZNK6String8getBytesEPhjj
+                0x00000fbe       0x54 lib/Arduino/WString.o
+                0x00000fbe                _ZNK6String8getBytesEPhjj
  .text._ZN6String6removeEjj
-                0x00000edc       0x5c lib/Arduino/WString.o
-                0x00000edc                _ZN6String6removeEjj
+                0x00001012       0x5c lib/Arduino/WString.o
+                0x00001012                _ZN6String6removeEjj
  .text._ZN6String4trimEv
-                0x00000f38       0xb4 lib/Arduino/WString.o
-                0x00000f38                _ZN6String4trimEv
+                0x0000106e       0xb4 lib/Arduino/WString.o
+                0x0000106e                _ZN6String4trimEv
  .text._ZN8BLEMate2C2EP6Stream
-                0x00000fec       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x00000fec                _ZN8BLEMate2C1EP6Stream
-                0x00000fec                _ZN8BLEMate2C2EP6Stream
+                0x00001122       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x00001122                _ZN8BLEMate2C1EP6Stream
+                0x00001122                _ZN8BLEMate2C2EP6Stream
  .text._ZN8BLEMate210knownStartEv
-                0x0000103a      0x140 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x0000103a                _ZN8BLEMate210knownStartEv
+                0x00001170      0x140 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x00001170                _ZN8BLEMate210knownStartEv
  .text._ZN8BLEMate26stdCmdE6String
-                0x0000117a      0x182 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x0000117a                _ZN8BLEMate26stdCmdE6String
+                0x000012b0      0x182 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x000012b0                _ZN8BLEMate26stdCmdE6String
  .text._ZN8BLEMate27restoreEv
-                0x000012fc       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x000012fc                _ZN8BLEMate27restoreEv
+                0x00001432       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x00001432                _ZN8BLEMate27restoreEv
  .text._ZN8BLEMate211writeConfigEv
-                0x0000134a       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x0000134a                _ZN8BLEMate211writeConfigEv
+                0x00001480       0x4e lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x00001480                _ZN8BLEMate211writeConfigEv
  .text._ZN8BLEMate25resetEv
-                0x00001398      0x1dc lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
-                0x00001398                _ZN8BLEMate25resetEv
+                0x000014ce      0x1dc lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x000014ce                _ZN8BLEMate25resetEv
+ .text._ZN8BLEMate29amCentralERb
+                0x000016aa      0x1c4 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x000016aa                _ZN8BLEMate29amCentralERb
+ .text._ZN8BLEMate28sendDataEPch
+                0x0000186e      0x12c lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x0000186e                _ZN8BLEMate28sendDataEPch
+ .text._ZN8BLEMate28sendDataER6String
+                0x0000199a       0x58 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x0000199a                _ZN8BLEMate28sendDataER6String
  .text.setup_leds
-                0x00001574       0x3a src/blink_leds.o
-                0x00001574                setup_leds
+                0x000019f2       0x3a src/blink_leds.o
+                0x000019f2                setup_leds
  .text.blink_left_arrow
-                0x000015ae       0xc8 src/blink_leds.o
-                0x000015ae                blink_left_arrow
+                0x00001a2c       0xc8 src/blink_leds.o
+                0x00001a2c                blink_left_arrow
  .text.turn_off_left_arrow
-                0x00001676       0x2e src/blink_leds.o
-                0x00001676                turn_off_left_arrow
+                0x00001af4       0x2e src/blink_leds.o
+                0x00001af4                turn_off_left_arrow
  .text.blink_right_arrow
-                0x000016a4       0xc8 src/blink_leds.o
-                0x000016a4                blink_right_arrow
+                0x00001b22       0xc8 src/blink_leds.o
+                0x00001b22                blink_right_arrow
  .text.turn_off_right_arrow
-                0x0000176c       0x2e src/blink_leds.o
-                0x0000176c                turn_off_right_arrow
+                0x00001bea       0x2e src/blink_leds.o
+                0x00001bea                turn_off_right_arrow
  .text.blink_top_arrow
-                0x0000179a       0xc8 src/blink_leds.o
-                0x0000179a                blink_top_arrow
+                0x00001c18       0xc8 src/blink_leds.o
+                0x00001c18                blink_top_arrow
  .text.turn_off_top_arrow
-                0x00001862       0x2e src/blink_leds.o
-                0x00001862                turn_off_top_arrow
+                0x00001ce0       0x2e src/blink_leds.o
+                0x00001ce0                turn_off_top_arrow
  .text.blink_status_led
-                0x00001890       0xa8 src/blink_leds.o
-                0x00001890                blink_status_led
+                0x00001d0e       0xa8 src/blink_leds.o
+                0x00001d0e                blink_status_led
  .text.turn_off_status_led
-                0x00001938       0x1e src/blink_leds.o
-                0x00001938                turn_off_status_led
+                0x00001db6       0x1e src/blink_leds.o
+                0x00001db6                turn_off_status_led
  .text.initVariant
-                0x00001956        0x2 src/main.o
-                0x00001956                initVariant
+                0x00001dd4        0x2 src/main.o
+                0x00001dd4                initVariant
  .text.startup.main
-                0x00001958       0x1e src/main.o
-                0x00001958                main
+                0x00001dd6       0x1e src/main.o
+                0x00001dd6                main
  .text._Z41__static_initialization_and_destruction_0ii.part.1
-                0x00001976       0x36 src/SensorGloves.o
+                0x00001df4       0x36 src/SensorGloves.o
  .text._Z5setupv
-                0x000019ac       0xea src/SensorGloves.o
-                0x000019ac                _Z5setupv
+                0x00001e2a       0xea src/SensorGloves.o
+                0x00001e2a                _Z5setupv
  .text._Z24do_flex_sensor_read_taskv
-                0x00001a96       0x8a src/SensorGloves.o
-                0x00001a96                _Z24do_flex_sensor_read_taskv
+                0x00001f14       0x8a src/SensorGloves.o
+                0x00001f14                _Z24do_flex_sensor_read_taskv
  .text._Z17do_led_blink_taskv
-                0x00001b20       0x44 src/SensorGloves.o
-                0x00001b20                _Z17do_led_blink_taskv
+                0x00001f9e       0x44 src/SensorGloves.o
+                0x00001f9e                _Z17do_led_blink_taskv
  .text.startup._GLOBAL__sub_I_inputBuffer
-                0x00001b64       0x24 src/SensorGloves.o
+                0x00001fe2       0x24 src/SensorGloves.o
  .text.exit._GLOBAL__sub_D_inputBuffer
-                0x00001b88        0x4 src/SensorGloves.o
+                0x00002006        0x4 src/SensorGloves.o
  .text._Z14do_serial_taskv
-                0x00001b8c       0xe8 src/SensorGloves.o
-                0x00001b8c                _Z14do_serial_taskv
+                0x0000200a      0x28c src/SensorGloves.o
+                0x0000200a                _Z14do_serial_taskv
  .text._Z4loopv
-                0x00001c74       0xc4 src/SensorGloves.o
-                0x00001c74                _Z4loopv
+                0x00002296       0xc4 src/SensorGloves.o
+                0x00002296                _Z4loopv
  .text.libgcc.div
-                0x00001d38       0x44 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_udivmodsi4.o)
-                0x00001d38                __udivmodsi4
- .text.libgcc   0x00001d7c        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
-                0x00001d7c                __tablejump2__
-                0x00001d80                __tablejump__
+                0x0000235a       0x44 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_udivmodsi4.o)
+                0x0000235a                __udivmodsi4
+ .text.libgcc   0x0000239e        0xc c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_tablejump.o)
+                0x0000239e                __tablejump2__
+                0x000023a2                __tablejump__
  .text.avr-libc
-                0x00001d88      0x24e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x00001d88                malloc
-                0x00001eb8                free
+                0x000023aa      0x24e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x000023aa                malloc
+                0x000024da                free
  .text.avr-libc
-                0x00001fd6      0x194 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(realloc.o)
-                0x00001fd6                realloc
+                0x000025f8      0x194 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(realloc.o)
+                0x000025f8                realloc
  .text.avr-libc
-                0x0000216a       0x10 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(isspace.o)
-                0x0000216a                isspace
+                0x0000278c       0x10 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(isspace.o)
+                0x0000278c                isspace
  .text.avr-libc
-                0x0000217a       0x12 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
-                0x0000217a                memcpy
+                0x0000279c       0x12 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(memcpy.o)
+                0x0000279c                memcpy
  .text.avr-libc
-                0x0000218c       0x12 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strcmp.o)
-                0x0000218c                strcmp
+                0x000027ae       0x12 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strcmp.o)
+                0x000027ae                strcmp
  .text.avr-libc
-                0x0000219e        0xe c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strcpy.o)
-                0x0000219e                strcpy
+                0x000027c0        0xe c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strcpy.o)
+                0x000027c0                strcpy
  .text.avr-libc
-                0x000021ac       0x1c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strncmp.o)
-                0x000021ac                strncmp
+                0x000027ce       0x1c c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strncmp.o)
+                0x000027ce                strncmp
  .text.avr-libc
-                0x000021c8       0x1e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strncpy.o)
-                0x000021c8                strncpy
+                0x000027ea       0x1e c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(strncpy.o)
+                0x000027ea                strncpy
  .text.avr-libc
-                0x000021e6        0x6 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(cty_isfalse.o)
-                0x000021e6                __ctype_isfalse
-                0x000021ea                __ctype_istrue
+                0x00002808        0x6 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(cty_isfalse.o)
+                0x00002808                __ctype_isfalse
+                0x0000280c                __ctype_istrue
  .text.libgcc.prologue
-                0x000021ec       0x38 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_prologue.o)
-                0x000021ec                __prologue_saves__
+                0x0000280e       0x38 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_prologue.o)
+                0x0000280e                __prologue_saves__
  .text.libgcc.prologue
-                0x00002224       0x36 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_epilogue.o)
-                0x00002224                __epilogue_restores__
-                0x0000225a                . = ALIGN (0x2)
+                0x00002846       0x36 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_epilogue.o)
+                0x00002846                __epilogue_restores__
+                0x0000287c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000225a        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
-                0x0000225a                _exit
-                0x0000225a                exit
+ .fini9         0x0000287c        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+                0x0000287c                _exit
+                0x0000287c                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
  *(.fini7)
  *(.fini7)
  *(.fini6)
- .fini6         0x0000225a       0x16 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_dtors.o)
-                0x0000225a                __do_global_dtors
+ .fini6         0x0000287c       0x16 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_dtors.o)
+                0x0000287c                __do_global_dtors
  *(.fini6)
  *(.fini5)
  *(.fini5)
@@ -1749,11 +1752,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00002270        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
+ .fini0         0x00002892        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x00002274                _etext = .
+                0x00002896                _etext = .
 
-.data           0x00800100      0x1b2 load address 0x00002274
+.data           0x00800100      0x254 load address 0x00002896
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x6 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(malloc.o)
@@ -1778,111 +1781,112 @@ END GROUP
                 0x0080011e       0x6a lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
                                  0x76 (size before relaxing)
  .rodata.str1.1
-                0x00800188      0x12a src/SensorGloves.o
-                                0x133 (size before relaxing)
+                0x00800188      0x1cb src/SensorGloves.o
+                                0x1dc (size before relaxing)
  *(.gnu.linkonce.d*)
-                0x008002b2                . = ALIGN (0x2)
-                0x008002b2                _edata = .
-                0x008002b2                PROVIDE (__data_end, .)
+                0x00800354                . = ALIGN (0x2)
+ *fill*         0x00800353        0x1 
+                0x00800354                _edata = .
+                0x00800354                PROVIDE (__data_end, .)
 
-.bss            0x008002b2      0x116
-                0x008002b2                PROVIDE (__bss_start, .)
+.bss            0x00800354      0x116
+                0x00800354                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
- .bss.Serial    0x008002b2       0x9d lib/Arduino/HardwareSerial0.o
-                0x008002b2                Serial
+ .bss.Serial    0x00800354       0x9d lib/Arduino/HardwareSerial0.o
+                0x00800354                Serial
  .bss._ZL11INADDR_NONE
-                0x0080034f        0x6 lib/Arduino/IPAddress.o
+                0x008003f1        0x6 lib/Arduino/IPAddress.o
  .bss.timer2_pin_mask
-                0x00800355        0x1 lib/Arduino/Tone.o
-                0x00800355                timer2_pin_mask
+                0x008003f7        0x1 lib/Arduino/Tone.o
+                0x008003f7                timer2_pin_mask
  .bss.timer2_pin_port
-                0x00800356        0x2 lib/Arduino/Tone.o
-                0x00800356                timer2_pin_port
+                0x008003f8        0x2 lib/Arduino/Tone.o
+                0x008003f8                timer2_pin_port
  .bss.timer2_toggle_count
-                0x00800358        0x4 lib/Arduino/Tone.o
-                0x00800358                timer2_toggle_count
- .bss.intFunc   0x0080035c        0x4 lib/Arduino/WInterrupts.o
+                0x008003fa        0x4 lib/Arduino/Tone.o
+                0x008003fa                timer2_toggle_count
+ .bss.intFunc   0x008003fe        0x4 lib/Arduino/WInterrupts.o
  .bss.timer0_fract
-                0x00800360        0x1 lib/Arduino/wiring.o
+                0x00800402        0x1 lib/Arduino/wiring.o
  .bss.timer0_millis
-                0x00800361        0x4 lib/Arduino/wiring.o
-                0x00800361                timer0_millis
+                0x00800403        0x4 lib/Arduino/wiring.o
+                0x00800403                timer0_millis
  .bss.timer0_overflow_count
-                0x00800365        0x4 lib/Arduino/wiring.o
-                0x00800365                timer0_overflow_count
+                0x00800407        0x4 lib/Arduino/wiring.o
+                0x00800407                timer0_overflow_count
  .bss.timer_status_led
-                0x00800369        0x4 src/blink_leds.o
-                0x00800369                timer_status_led
+                0x0080040b        0x4 src/blink_leds.o
+                0x0080040b                timer_status_led
  .bss.timer_right_arrow
-                0x0080036d        0x4 src/blink_leds.o
-                0x0080036d                timer_right_arrow
+                0x0080040f        0x4 src/blink_leds.o
+                0x0080040f                timer_right_arrow
  .bss.timer_top_arrow
-                0x00800371        0x4 src/blink_leds.o
-                0x00800371                timer_top_arrow
+                0x00800413        0x4 src/blink_leds.o
+                0x00800413                timer_top_arrow
  .bss.timer_left_arrow
-                0x00800375        0x4 src/blink_leds.o
-                0x00800375                timer_left_arrow
+                0x00800417        0x4 src/blink_leds.o
+                0x00800417                timer_left_arrow
  .bss.led_blink_task_last_run
-                0x00800379        0x4 src/SensorGloves.o
-                0x00800379                led_blink_task_last_run
+                0x0080041b        0x4 src/SensorGloves.o
+                0x0080041b                led_blink_task_last_run
  .bss.flex_sensor_read_task_last_run
-                0x0080037d        0x4 src/SensorGloves.o
-                0x0080037d                flex_sensor_read_task_last_run
+                0x0080041f        0x4 src/SensorGloves.o
+                0x0080041f                flex_sensor_read_task_last_run
  .bss.serial_task_last_run
-                0x00800381        0x4 src/SensorGloves.o
-                0x00800381                serial_task_last_run
+                0x00800423        0x4 src/SensorGloves.o
+                0x00800423                serial_task_last_run
  .bss.leftMiddleReading
-                0x00800385        0x2 src/SensorGloves.o
-                0x00800385                leftMiddleReading
+                0x00800427        0x2 src/SensorGloves.o
+                0x00800427                leftMiddleReading
  .bss.leftIndexReading
-                0x00800387        0x2 src/SensorGloves.o
-                0x00800387                leftIndexReading
+                0x00800429        0x2 src/SensorGloves.o
+                0x00800429                leftIndexReading
  .bss.leftThumbReading
-                0x00800389        0x2 src/SensorGloves.o
-                0x00800389                leftThumbReading
+                0x0080042b        0x2 src/SensorGloves.o
+                0x0080042b                leftThumbReading
  .bss.turnSignalSent
-                0x0080038b        0x2 src/SensorGloves.o
-                0x0080038b                turnSignalSent
- .bss.BTModu    0x0080038d       0x23 src/SensorGloves.o
-                0x0080038d                BTModu
+                0x0080042d        0x2 src/SensorGloves.o
+                0x0080042d                turnSignalSent
+ .bss.BTModu    0x0080042f       0x23 src/SensorGloves.o
+                0x0080042f                BTModu
  .bss.status_led_on
-                0x008003b0        0x1 src/SensorGloves.o
-                0x008003b0                status_led_on
+                0x00800452        0x1 src/SensorGloves.o
+                0x00800452                status_led_on
  .bss.top_arrow_on
-                0x008003b1        0x1 src/SensorGloves.o
-                0x008003b1                top_arrow_on
+                0x00800453        0x1 src/SensorGloves.o
+                0x00800453                top_arrow_on
  .bss.right_arrow_on
-                0x008003b2        0x1 src/SensorGloves.o
-                0x008003b2                right_arrow_on
+                0x00800454        0x1 src/SensorGloves.o
+                0x00800454                right_arrow_on
  .bss.left_arrow_on
-                0x008003b3        0x1 src/SensorGloves.o
-                0x008003b3                left_arrow_on
+                0x00800455        0x1 src/SensorGloves.o
+                0x00800455                left_arrow_on
  .bss.sendBuffer
-                0x008003b4        0x6 src/SensorGloves.o
-                0x008003b4                sendBuffer
+                0x00800456        0x6 src/SensorGloves.o
+                0x00800456                sendBuffer
  .bss.inputBuffer
-                0x008003ba        0x6 src/SensorGloves.o
-                0x008003ba                inputBuffer
+                0x0080045c        0x6 src/SensorGloves.o
+                0x0080045c                inputBuffer
  *(COMMON)
- COMMON         0x008003c0        0x4 src/blink_leds.o
-                0x008003c0                right_arrow_is_on
-                0x008003c1                left_arrow_is_on
-                0x008003c2                top_arrow_is_on
-                0x008003c3                status_led_is_on
- COMMON         0x008003c4        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(malloc.o)
-                0x008003c4                __brkval
-                0x008003c6                __flp
-                0x008003c8                PROVIDE (__bss_end, .)
-                0x00002274                __data_load_start = LOADADDR (.data)
-                0x00002426                __data_load_end = (__data_load_start + SIZEOF (.data))
+ COMMON         0x00800462        0x4 src/blink_leds.o
+                0x00800462                right_arrow_is_on
+                0x00800463                left_arrow_is_on
+                0x00800464                top_arrow_is_on
+                0x00800465                status_led_is_on
+ COMMON         0x00800466        0x4 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/../../../../avr/lib/avr5\libc.a(malloc.o)
+                0x00800466                __brkval
+                0x00800468                __flp
+                0x0080046a                PROVIDE (__bss_end, .)
+                0x00002896                __data_load_start = LOADADDR (.data)
+                0x00002aea                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x008003c8        0x0
-                0x008003c8                PROVIDE (__noinit_start, .)
+.noinit         0x0080046a        0x0
+                0x0080046a                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x008003c8                PROVIDE (__noinit_end, .)
-                0x008003c8                _end = .
-                0x008003c8                PROVIDE (__heap_start, .)
+                0x0080046a                PROVIDE (__noinit_end, .)
+                0x0080046a                _end = .
+                0x0080046a                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -1928,6 +1932,7 @@ END GROUP
  .comment       0x00000000       0x31 lib/Arduino/HardwareSerial0.o
  .comment       0x00000000       0x31 lib/Arduino/hooks.o
  .comment       0x00000000       0x31 lib/Arduino/IPAddress.o
+ .comment       0x00000000       0x31 lib/Arduino/new.o
  .comment       0x00000000       0x31 lib/Arduino/Print.o
  .comment       0x00000000       0x31 lib/Arduino/Tone.o
  .comment       0x00000000       0x31 lib/Arduino/WInterrupts.o
@@ -1957,7 +1962,7 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000      0x768
+.debug_aranges  0x00000000      0x7a0
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x68 lib/Arduino/HardwareSerial.o
@@ -1968,104 +1973,110 @@ END GROUP
  .debug_aranges
                 0x000000c0       0x60 lib/Arduino/IPAddress.o
  .debug_aranges
-                0x00000120       0xf0 lib/Arduino/Print.o
+                0x00000120       0x38 lib/Arduino/new.o
  .debug_aranges
-                0x00000210       0x38 lib/Arduino/Tone.o
+                0x00000158       0xf0 lib/Arduino/Print.o
  .debug_aranges
-                0x00000248       0x38 lib/Arduino/WInterrupts.o
+                0x00000248       0x38 lib/Arduino/Tone.o
  .debug_aranges
-                0x00000280       0x48 lib/Arduino/wiring.o
+                0x00000280       0x38 lib/Arduino/WInterrupts.o
  .debug_aranges
-                0x000002c8       0x30 lib/Arduino/wiring_analog.o
+                0x000002b8       0x48 lib/Arduino/wiring.o
  .debug_aranges
-                0x000002f8       0x38 lib/Arduino/wiring_digital.o
+                0x00000300       0x30 lib/Arduino/wiring_analog.o
  .debug_aranges
-                0x00000330      0x2a0 lib/Arduino/WString.o
+                0x00000330       0x38 lib/Arduino/wiring_digital.o
  .debug_aranges
-                0x000005d0       0x98 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+                0x00000368      0x2a0 lib/Arduino/WString.o
  .debug_aranges
-                0x00000668       0x60 src/blink_leds.o
+                0x00000608       0x98 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
  .debug_aranges
-                0x000006c8       0x30 src/main.o
+                0x000006a0       0x60 src/blink_leds.o
  .debug_aranges
-                0x000006f8       0x70 src/SensorGloves.o
+                0x00000700       0x30 src/main.o
+ .debug_aranges
+                0x00000730       0x70 src/SensorGloves.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000    0x11bf8
+.debug_info     0x00000000    0x1218e
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000     0x1ad2 lib/Arduino/HardwareSerial.o
  .debug_info    0x00001ad2     0x16e2 lib/Arduino/HardwareSerial0.o
  .debug_info    0x000031b4       0x3e lib/Arduino/hooks.o
  .debug_info    0x000031f2      0x975 lib/Arduino/IPAddress.o
- .debug_info    0x00003b67     0x2691 lib/Arduino/Print.o
- .debug_info    0x000061f8      0x73d lib/Arduino/Tone.o
- .debug_info    0x00006935      0x200 lib/Arduino/WInterrupts.o
- .debug_info    0x00006b35      0x2c6 lib/Arduino/wiring.o
- .debug_info    0x00006dfb      0x285 lib/Arduino/wiring_analog.o
- .debug_info    0x00007080      0x5f5 lib/Arduino/wiring_digital.o
- .debug_info    0x00007675     0x3ed8 lib/Arduino/WString.o
- .debug_info    0x0000b54d     0x3684 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_info    0x0000ebd1      0x6d2 src/blink_leds.o
- .debug_info    0x0000f2a3      0x1fc src/main.o
- .debug_info    0x0000f49f     0x2759 src/SensorGloves.o
+ .debug_info    0x00003b67      0x18c lib/Arduino/new.o
+ .debug_info    0x00003cf3     0x2691 lib/Arduino/Print.o
+ .debug_info    0x00006384      0x73d lib/Arduino/Tone.o
+ .debug_info    0x00006ac1      0x200 lib/Arduino/WInterrupts.o
+ .debug_info    0x00006cc1      0x2c6 lib/Arduino/wiring.o
+ .debug_info    0x00006f87      0x285 lib/Arduino/wiring_analog.o
+ .debug_info    0x0000720c      0x5f5 lib/Arduino/wiring_digital.o
+ .debug_info    0x00007801     0x3ed8 lib/Arduino/WString.o
+ .debug_info    0x0000b6d9     0x3684 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_info    0x0000ed5d      0x6d2 src/blink_leds.o
+ .debug_info    0x0000f42f      0x1fc src/main.o
+ .debug_info    0x0000f62b     0x2b63 src/SensorGloves.o
 
-.debug_abbrev   0x00000000     0x273a
+.debug_abbrev   0x00000000     0x282f
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x40a lib/Arduino/HardwareSerial.o
  .debug_abbrev  0x0000040a      0x35d lib/Arduino/HardwareSerial0.o
  .debug_abbrev  0x00000767       0x2a lib/Arduino/hooks.o
  .debug_abbrev  0x00000791      0x346 lib/Arduino/IPAddress.o
- .debug_abbrev  0x00000ad7      0x425 lib/Arduino/Print.o
- .debug_abbrev  0x00000efc      0x26f lib/Arduino/Tone.o
- .debug_abbrev  0x0000116b       0xe6 lib/Arduino/WInterrupts.o
- .debug_abbrev  0x00001251      0x145 lib/Arduino/wiring.o
- .debug_abbrev  0x00001396      0x186 lib/Arduino/wiring_analog.o
- .debug_abbrev  0x0000151c      0x164 lib/Arduino/wiring_digital.o
- .debug_abbrev  0x00001680      0x483 lib/Arduino/WString.o
- .debug_abbrev  0x00001b03      0x4d9 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_abbrev  0x00001fdc      0x12b src/blink_leds.o
- .debug_abbrev  0x00002107       0xf4 src/main.o
- .debug_abbrev  0x000021fb      0x53f src/SensorGloves.o
+ .debug_abbrev  0x00000ad7       0xd9 lib/Arduino/new.o
+ .debug_abbrev  0x00000bb0      0x425 lib/Arduino/Print.o
+ .debug_abbrev  0x00000fd5      0x26f lib/Arduino/Tone.o
+ .debug_abbrev  0x00001244       0xe6 lib/Arduino/WInterrupts.o
+ .debug_abbrev  0x0000132a      0x145 lib/Arduino/wiring.o
+ .debug_abbrev  0x0000146f      0x186 lib/Arduino/wiring_analog.o
+ .debug_abbrev  0x000015f5      0x164 lib/Arduino/wiring_digital.o
+ .debug_abbrev  0x00001759      0x483 lib/Arduino/WString.o
+ .debug_abbrev  0x00001bdc      0x4d9 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_abbrev  0x000020b5      0x12b src/blink_leds.o
+ .debug_abbrev  0x000021e0       0xf4 src/main.o
+ .debug_abbrev  0x000022d4      0x55b src/SensorGloves.o
 
-.debug_line     0x00000000     0x2805
+.debug_line     0x00000000     0x29af
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x2ab lib/Arduino/HardwareSerial.o
  .debug_line    0x000002ab      0x205 lib/Arduino/HardwareSerial0.o
  .debug_line    0x000004b0       0x43 lib/Arduino/hooks.o
  .debug_line    0x000004f3      0x25d lib/Arduino/IPAddress.o
- .debug_line    0x00000750      0x419 lib/Arduino/Print.o
- .debug_line    0x00000b69      0x1a6 lib/Arduino/Tone.o
- .debug_line    0x00000d0f      0x12c lib/Arduino/WInterrupts.o
- .debug_line    0x00000e3b      0x17a lib/Arduino/wiring.o
- .debug_line    0x00000fb5      0x144 lib/Arduino/wiring_analog.o
- .debug_line    0x000010f9      0x141 lib/Arduino/wiring_digital.o
- .debug_line    0x0000123a      0xa83 lib/Arduino/WString.o
- .debug_line    0x00001cbd      0x499 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_line    0x00002156      0x208 src/blink_leds.o
- .debug_line    0x0000235e      0x133 src/main.o
- .debug_line    0x00002491      0x374 src/SensorGloves.o
+ .debug_line    0x00000750      0x164 lib/Arduino/new.o
+ .debug_line    0x000008b4      0x419 lib/Arduino/Print.o
+ .debug_line    0x00000ccd      0x1a6 lib/Arduino/Tone.o
+ .debug_line    0x00000e73      0x12c lib/Arduino/WInterrupts.o
+ .debug_line    0x00000f9f      0x17a lib/Arduino/wiring.o
+ .debug_line    0x00001119      0x144 lib/Arduino/wiring_analog.o
+ .debug_line    0x0000125d      0x141 lib/Arduino/wiring_digital.o
+ .debug_line    0x0000139e      0xa83 lib/Arduino/WString.o
+ .debug_line    0x00001e21      0x499 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_line    0x000022ba      0x208 src/blink_leds.o
+ .debug_line    0x000024c2      0x133 src/main.o
+ .debug_line    0x000025f5      0x3ba src/SensorGloves.o
 
-.debug_frame    0x00000000     0x1adc
+.debug_frame    0x00000000     0x1b30
  *(.debug_frame)
  .debug_frame   0x00000000      0x110 lib/Arduino/HardwareSerial.o
  .debug_frame   0x00000110       0xc0 lib/Arduino/HardwareSerial0.o
  .debug_frame   0x000001d0       0x24 lib/Arduino/hooks.o
  .debug_frame   0x000001f4       0xe0 lib/Arduino/IPAddress.o
- .debug_frame   0x000002d4      0x3b8 lib/Arduino/Print.o
- .debug_frame   0x0000068c      0x100 lib/Arduino/Tone.o
- .debug_frame   0x0000078c       0xe4 lib/Arduino/WInterrupts.o
- .debug_frame   0x00000870       0xbc lib/Arduino/wiring.o
- .debug_frame   0x0000092c       0x54 lib/Arduino/wiring_analog.o
- .debug_frame   0x00000980       0x88 lib/Arduino/wiring_digital.o
- .debug_frame   0x00000a08      0xa0c lib/Arduino/WString.o
- .debug_frame   0x00001414      0x408 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_frame   0x0000181c       0xdc src/blink_leds.o
- .debug_frame   0x000018f8       0x44 src/main.o
- .debug_frame   0x0000193c      0x1a0 src/SensorGloves.o
+ .debug_frame   0x000002d4       0x54 lib/Arduino/new.o
+ .debug_frame   0x00000328      0x3b8 lib/Arduino/Print.o
+ .debug_frame   0x000006e0      0x100 lib/Arduino/Tone.o
+ .debug_frame   0x000007e0       0xe4 lib/Arduino/WInterrupts.o
+ .debug_frame   0x000008c4       0xbc lib/Arduino/wiring.o
+ .debug_frame   0x00000980       0x54 lib/Arduino/wiring_analog.o
+ .debug_frame   0x000009d4       0x88 lib/Arduino/wiring_digital.o
+ .debug_frame   0x00000a5c      0xa0c lib/Arduino/WString.o
+ .debug_frame   0x00001468      0x408 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_frame   0x00001870       0xdc src/blink_leds.o
+ .debug_frame   0x0000194c       0x44 src/main.o
+ .debug_frame   0x00001990      0x1a0 src/SensorGloves.o
 
-.debug_str      0x00000000     0x28db
+.debug_str      0x00000000     0x2934
  *(.debug_str)
  .debug_str     0x00000000     0x10ee lib/Arduino/HardwareSerial.o
                                0x1182 (size before relaxing)
@@ -2075,45 +2086,48 @@ END GROUP
                                  0xf8 (size before relaxing)
  .debug_str     0x0000122f      0x259 lib/Arduino/IPAddress.o
                                 0x4cc (size before relaxing)
- .debug_str     0x00001488      0x37e lib/Arduino/Print.o
+ .debug_str     0x00001488       0x7d lib/Arduino/new.o
+                                0x19f (size before relaxing)
+ .debug_str     0x00001505      0x37e lib/Arduino/Print.o
                                 0xe3c (size before relaxing)
- .debug_str     0x00001806      0x1b3 lib/Arduino/Tone.o
+ .debug_str     0x00001883      0x1b3 lib/Arduino/Tone.o
                                 0x397 (size before relaxing)
- .debug_str     0x000019b9       0x88 lib/Arduino/WInterrupts.o
+ .debug_str     0x00001a36       0x88 lib/Arduino/WInterrupts.o
                                 0x1e8 (size before relaxing)
- .debug_str     0x00001a41       0x88 lib/Arduino/wiring.o
+ .debug_str     0x00001abe       0x88 lib/Arduino/wiring.o
                                 0x1fa (size before relaxing)
- .debug_str     0x00001ac9       0x75 lib/Arduino/wiring_analog.o
+ .debug_str     0x00001b46       0x75 lib/Arduino/wiring_analog.o
                                 0x207 (size before relaxing)
- .debug_str     0x00001b3e       0x5a lib/Arduino/wiring_digital.o
+ .debug_str     0x00001bbb       0x5a lib/Arduino/wiring_digital.o
                                 0x268 (size before relaxing)
- .debug_str     0x00001b98      0x39c lib/Arduino/WString.o
+ .debug_str     0x00001c15      0x397 lib/Arduino/WString.o
                                 0xe12 (size before relaxing)
- .debug_str     0x00001f34      0x56c lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_str     0x00001fac      0x53f lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
                                0x142b (size before relaxing)
- .debug_str     0x000024a0      0x13b src/blink_leds.o
+ .debug_str     0x000024eb      0x13b src/blink_leds.o
                                 0x2bd (size before relaxing)
- .debug_str     0x000025db       0x5a src/main.o
+ .debug_str     0x00002626       0x5a src/main.o
                                 0x225 (size before relaxing)
- .debug_str     0x00002635      0x2a6 src/SensorGloves.o
-                               0x16e8 (size before relaxing)
+ .debug_str     0x00002680      0x2b4 src/SensorGloves.o
+                               0x16fb (size before relaxing)
 
-.debug_loc      0x00000000     0x9042
+.debug_loc      0x00000000     0x90da
  *(.debug_loc)
  .debug_loc     0x00000000      0x3eb lib/Arduino/HardwareSerial.o
  .debug_loc     0x000003eb      0x161 lib/Arduino/HardwareSerial0.o
  .debug_loc     0x0000054c      0x25d lib/Arduino/IPAddress.o
- .debug_loc     0x000007a9     0x1eed lib/Arduino/Print.o
- .debug_loc     0x00002696      0x94a lib/Arduino/Tone.o
- .debug_loc     0x00002fe0      0x1f6 lib/Arduino/WInterrupts.o
- .debug_loc     0x000031d6      0x238 lib/Arduino/wiring.o
- .debug_loc     0x0000340e      0x127 lib/Arduino/wiring_analog.o
- .debug_loc     0x00003535      0x617 lib/Arduino/wiring_digital.o
- .debug_loc     0x00003b4c     0x3ca4 lib/Arduino/WString.o
- .debug_loc     0x000077f0     0x1216 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_loc     0x00008a06       0xf2 src/blink_leds.o
- .debug_loc     0x00008af8       0x26 src/main.o
- .debug_loc     0x00008b1e      0x524 src/SensorGloves.o
+ .debug_loc     0x000007a9       0x98 lib/Arduino/new.o
+ .debug_loc     0x00000841     0x1eed lib/Arduino/Print.o
+ .debug_loc     0x0000272e      0x94a lib/Arduino/Tone.o
+ .debug_loc     0x00003078      0x1f6 lib/Arduino/WInterrupts.o
+ .debug_loc     0x0000326e      0x238 lib/Arduino/wiring.o
+ .debug_loc     0x000034a6      0x127 lib/Arduino/wiring_analog.o
+ .debug_loc     0x000035cd      0x617 lib/Arduino/wiring_digital.o
+ .debug_loc     0x00003be4     0x3ca4 lib/Arduino/WString.o
+ .debug_loc     0x00007888     0x1216 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_loc     0x00008a9e       0xf2 src/blink_leds.o
+ .debug_loc     0x00008b90       0x26 src/main.o
+ .debug_loc     0x00008bb6      0x524 src/SensorGloves.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -2133,23 +2147,24 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000      0x890
+.debug_ranges   0x00000000      0x8b8
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x70 lib/Arduino/HardwareSerial.o
  .debug_ranges  0x00000070       0x28 lib/Arduino/HardwareSerial0.o
  .debug_ranges  0x00000098       0x10 lib/Arduino/hooks.o
  .debug_ranges  0x000000a8       0x68 lib/Arduino/IPAddress.o
- .debug_ranges  0x00000110      0x140 lib/Arduino/Print.o
- .debug_ranges  0x00000250       0x70 lib/Arduino/Tone.o
- .debug_ranges  0x000002c0       0x28 lib/Arduino/WInterrupts.o
- .debug_ranges  0x000002e8       0x38 lib/Arduino/wiring.o
- .debug_ranges  0x00000320       0x20 lib/Arduino/wiring_analog.o
- .debug_ranges  0x00000340       0x40 lib/Arduino/wiring_digital.o
- .debug_ranges  0x00000380      0x2f8 lib/Arduino/WString.o
- .debug_ranges  0x00000678       0xb8 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
- .debug_ranges  0x00000730       0x50 src/blink_leds.o
- .debug_ranges  0x00000780       0x20 src/main.o
- .debug_ranges  0x000007a0       0xf0 src/SensorGloves.o
+ .debug_ranges  0x00000110       0x28 lib/Arduino/new.o
+ .debug_ranges  0x00000138      0x140 lib/Arduino/Print.o
+ .debug_ranges  0x00000278       0x70 lib/Arduino/Tone.o
+ .debug_ranges  0x000002e8       0x28 lib/Arduino/WInterrupts.o
+ .debug_ranges  0x00000310       0x38 lib/Arduino/wiring.o
+ .debug_ranges  0x00000348       0x20 lib/Arduino/wiring_analog.o
+ .debug_ranges  0x00000368       0x40 lib/Arduino/wiring_digital.o
+ .debug_ranges  0x000003a8      0x2f8 lib/Arduino/WString.o
+ .debug_ranges  0x000006a0       0xb8 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o
+ .debug_ranges  0x00000758       0x50 src/blink_leds.o
+ .debug_ranges  0x000007a8       0x20 src/main.o
+ .debug_ranges  0x000007c8       0xf0 src/SensorGloves.o
 
 .debug_macro
  *(.debug_macro)

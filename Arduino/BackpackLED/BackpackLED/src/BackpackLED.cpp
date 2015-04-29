@@ -8,8 +8,6 @@
  *  Author: Josh Yu
  */ 
 
-
-//#include <avr/io.h>
 #include "BackpackLED.h"
 #include "../lib/Arduino/Arduino.h"
 #include "../lib/SparkFun_BLEMate2/SparkFun_BLEMate2.h"    // BLE Library
@@ -20,22 +18,31 @@
 void initMatrix();
 void initBluetooth();
 void drawMatrix(int msgNum);
-void setupPeripheralExample();
 
 static String fullBuffer = "";
 static String inputBuffer;
 static String sendBuffer;
 boolean central = true;
-int counter = 0;
-int i = 0;
 
 RGBmatrixPanel matrix(A, B, C, D, CLK, LAT, OE, false);
 
 BLEMate2 BTModu(&Serial1);
 
+unsigned long serial_task_last_run = 0;
+unsigned long matrix_draw_last_run = 0;
+
+#define SERIAL_TASK_PERIOD 1000
+#define MATRIX_DRAW_PERIOD 1000
+void do_serial_task();
+void do_matrix_draw_task();
+
+boolean show_left_arrow = false;
+boolean show_right_arrow = false;
+boolean show_stop_sign = false;
+
 void setup()
 {
-    Serial.begin(9600);           // This is the BC118 default baud rate.
+    Serial.begin(9600);     // This is the PC Communication Rate.
     Serial1.begin(9600);    // This is the BC118 default baud rate.
 
     #ifdef DEBUG
@@ -52,19 +59,29 @@ void setup()
     delay(1000);
 }
 
-
-int main(void)
+void loop()
 {
-    setup();
-    while(1)
-    {
-        doCentralExample();
+    if (millis() > (serial_task_last_run + SERIAL_TASK_PERIOD)) {
+        //Serial.println("Serial runs");
+        do_serial_task();
+        serial_task_last_run = millis();
     }
-    return 0;
+
+    if (millis() > (matrix_draw_last_run + MATRIX_DRAW_PERIOD)) {
+        //Serial.println("Flex read runs");
+        do_matrix_draw_task();
+        matrix_draw_last_run = millis();
+    }
 }
 
-void doCentralExample()
+void do_serial_task()
 {
+    while (Serial1.available() > 0)
+    {
+        inputBuffer.concat((char)Serial1.read());
+        delay(50);
+    }
+        
     // When a remote module connects to us, we'll start to see a bunch of stuff.
     //  Most of that is just overhead; we don't really care about it. All we
     //  *really* care about is data, and data looks like this:
@@ -73,38 +90,61 @@ void doCentralExample()
     // The state machine for capturing that can be pretty easy: when we've read
     //  in \n\r, check to see if the string began with "RCV=". If yes, do
     //  something. If no, discard it.
-    while(1){
-        while (!inputBuffer.endsWith("\n\r"))
-        {
-            inputBuffer.concat((char)Serial1.read());
-            //delay(10);
+    if (inputBuffer.endsWith("\n\r")) {
+        if (inputBuffer.startsWith("RCV=")) {
+            inputBuffer.trim();
+            inputBuffer.remove(0, 4);
+            //Serial.println(inputBuffer);
+            //left_arrow_on = true;
+            //inputBuffer = "";
+            goto parse_message;
+            } else {
+            inputBuffer = "";
         }
-        Serial.println(inputBuffer);
-        
-        // We'll probably see a lot of lines that end with \n\r- that's the default
-        //  line ending for all the connect info messages, for instance. We can
-        //  ignore all of them that don't start with "RCV=". Remember to clear your
-        //  String object after you find \n\r!!!
-//        if (inputBuffer.endsWith("\n\r"))
-//        {
-        if (inputBuffer.startsWith("RCV="))
-        {
-            inputBuffer.trim(); // Remove \n\r from end.
-            inputBuffer.remove(0,4); // Remove RCV= from front.
-            if (inputBuffer == "BL1") 
-            {
-                drawMatrix(1);
-            }
-            drawMatrix(inputBuffer.toInt());
-        }
-//        }
+        } else {
         inputBuffer = "";
     }
-    BTModu.disconnect();
     
-    delay(500);
-    Serial.println("The End!");
-    while(1);
+    parse_message:
+
+    // what kind of messages go to glove? navigation, ack from backpack,
+    // check if the input buffer is intended for the left or right glove
+    // check if the message is coming from the phone or backpack
+    // then check flex sensors for any special readings for sending to backpack
+
+    //for acknowledgement: if there's already been an acknowledgment for
+    
+    if (inputBuffer.startsWith("BL1")) {
+        Serial.println("TO BACKPACK: SHOW LEFT TURN SIGNAL");
+        show_left_arrow = true;
+        show_right_arrow = false;
+        show_stop_sign = false;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat("BL1");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+        } else if (inputBuffer.startsWith("BR2")) {
+        Serial.println("TO BACKPACK: SHOW RIGHT TURN SIGNAL");
+        show_right_arrow = true;
+        show_left_arrow = false;
+        show_stop_sign = false;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat("BR2");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+        } else if (inputBuffer.startsWith("BL3")) {
+        Serial.println("TO BACKPACK: DON'T SHOW RIGHT TURN SIGNAL");
+        show_left_arrow = false;
+        show_right_arrow = false;
+        show_stop_sign = true;
+        //do some ack stuff here
+        Serial.flush();
+        sendBuffer.concat("BL3");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    }
 }
 
 
@@ -144,7 +184,7 @@ void initBluetooth()
     boolean restoreSuccess = false;
     boolean writeConfigSuccess = false;
     boolean secondResetSuccess = false;
-    for (i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++) {
         // Reset is a blocking function which gives the BC118 a few seconds to reset.
         //  After a reset, the module will return to whatever settings are in
         //  non-volatile memory. One other *super* important thing it does is issue
@@ -221,6 +261,27 @@ void initBluetooth()
     }
 }
 
+void do_matrix_draw_task()
+{
+    if (show_left_arrow) {
+        drawMatrix(1);
+    } else {
+        drawMatrix(-1);
+    }
+    
+    if (show_right_arrow) {
+        drawMatrix(2);
+        } else {
+        drawMatrix(-1);
+    }
+    
+    if (show_stop_sign) {
+        drawMatrix(3);
+        } else {
+        drawMatrix(-1);
+    }
+}
+
 void drawMatrix(int msgNum)
 {
     switch (msgNum) {
@@ -229,7 +290,7 @@ void drawMatrix(int msgNum)
 
         //draw a left arrow
         //horiz line
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             matrix.drawLine(27, 15, 5, 15, matrix.Color333(4, 7, 5));
             matrix.drawLine(16, 4, 6, 14, matrix.Color333(4, 7, 5));
             matrix.drawLine(16, 26, 6, 16, matrix.Color333(4, 7, 5));
@@ -243,7 +304,7 @@ void drawMatrix(int msgNum)
         //turn right
         //draw a right arrow
         //horiz line
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             matrix.drawLine(5, 15, 27, 15, matrix.Color333(4, 7, 5));
             matrix.drawLine(16, 4, 26, 14, matrix.Color333(4, 7, 5));
             matrix.drawLine(16, 26, 26, 16, matrix.Color333(4, 7, 5));
@@ -256,7 +317,7 @@ void drawMatrix(int msgNum)
         break;
         
         case 3:
-        for (i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             //draw a stop sign
             matrix.fillCircle(15, 15, 15, matrix.Color333(7, 0, 0));
             
@@ -276,6 +337,16 @@ void drawMatrix(int msgNum)
             
         }
         break;
+        
+        default:
+            matrix.begin();
+            matrix.setCursor(7, 0);
+            matrix.setTextSize(1);
+            matrix.setTextColor(matrix.Color333(7, 7, 7));
+            
+            matrix.print(" ");
+            break;
+
     }
 }
 
