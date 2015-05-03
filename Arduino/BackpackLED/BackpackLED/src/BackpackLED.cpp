@@ -105,7 +105,7 @@ void do_serial_task()
         inputBuffer = "";
     }
     
-    parse_message:
+parse_message:
 
     // what kind of messages go to glove? navigation, ack from backpack,
     // check if the input buffer is intended for the left or right glove
@@ -120,30 +120,68 @@ void do_serial_task()
         show_right_arrow = false;
         show_stop_sign = false;
         //do some ack stuff here
-        Serial.flush();
-        sendBuffer.concat("LB1");
+        //Serial.flush();
+        sendBuffer = "LB1";
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
-        } else if (inputBuffer.startsWith("BR2")) {
+    } else if (inputBuffer.startsWith("BR2")) {
         Serial.println("TO BACKPACK: SHOW RIGHT TURN SIGNAL");
         show_right_arrow = true;
         show_left_arrow = false;
         show_stop_sign = false;
         //do some ack stuff here
-        Serial.flush();
-        sendBuffer.concat("RB2");
+        //Serial.flush();
+        sendBuffer = "RB2";
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
-        } else if (inputBuffer.startsWith("BL3")) {
+    } else if (inputBuffer.startsWith("BL4")) {
+        Serial.println("TO BACKPACK: STOP SHOWING ANYTHING");
+        show_left_arrow = false;
+        show_right_arrow = false;
+        show_stop_sign = false;
+        //do some ack stuff here
+        //Serial.flush();
+        sendBuffer.concat("LB4");
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer.startsWith("BR4")) {
+        Serial.println("TO BACKPACK: STOP SHOWING ARROWS");
+        show_left_arrow = false;
+        show_right_arrow = false;
+        show_stop_sign = false;
+        //do some ack stuff here
+        //Serial.flush();
+        sendBuffer = "RB4";
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer.startsWith("BP3")) {
         Serial.println("TO BACKPACK: SHOW STOP SIGN");
         show_left_arrow = false;
         show_right_arrow = false;
         show_stop_sign = true;
         //do some ack stuff here
-        Serial.flush();
-        sendBuffer.concat("LB3");
+        //Serial.flush();
+        sendBuffer = "PB3";
         BTModu.sendData(sendBuffer);
         sendBuffer = "";
+    } else if (inputBuffer.startsWith("BP4")) {
+        Serial.println("TO BACKPACK: DON'T SHOW STOP SIGN");
+        show_left_arrow = false;
+        show_right_arrow = false;
+        show_stop_sign = false;
+        //do some ack stuff here
+        //Serial.flush();
+        sendBuffer = "PB4";
+        BTModu.sendData(sendBuffer);
+        sendBuffer = "";
+    } else if (inputBuffer.startsWith("BP5")) {
+        Serial.println("TO BACKPACK: DISCONNECT");
+        show_left_arrow = false;
+        show_right_arrow = false;
+        show_stop_sign = false;
+        BTModu.disconnect();
+        delay(100);
+        BTModu.BLEAdvertise();
     }
 }
 
@@ -151,13 +189,12 @@ void do_serial_task()
 void initMatrix()
 {
     matrix.begin();
-    matrix.setCursor(7, 0);
+    
     matrix.setTextSize(1);
     matrix.setTextColor(matrix.Color333(7, 7, 7));
     
-    matrix.print("H");
-    matrix.print("I");
-    matrix.print("!");
+    matrix.setCursor(1, 12);
+    matrix.print("BRAKE");
 
     delay(3000);
 
@@ -312,7 +349,12 @@ void drawMatrix(int msgNum)
                     done_drawing = true;
                     break;
                 default:
-                    matrix.fillRect(0, 0, 31, 31, matrix.Color333(0, 0, 0));
+                    //draw a smiley face
+                    matrix.fillCircle(8, 8, 3, matrix.Color333(3, 6, 2));
+                    matrix.fillCircle(24, 8, 3, matrix.Color333(3, 6, 2));
+                    matrix.drawFastVLine(4, 18, 4, matrix.Color333(3, 6, 2));
+                    matrix.drawFastHLine(5, 22, 22, matrix.Color333(3, 6, 2));
+                    matrix.drawFastVLine(27, 18, 4, matrix.Color333(3, 6, 2));
                     done_drawing = true;
                     break;
             }

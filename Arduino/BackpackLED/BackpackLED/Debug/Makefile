@@ -74,7 +74,6 @@ C_SRCS +=  \
 ../lib/SparkFun_BLEMate2/connections.cpp \
 ../lib/SparkFun_BLEMate2/SparkFun_BLEMate2.cpp \
 ../src/BackpackLED.cpp \
-../src/blink_leds.c \
 ../src/main.cpp
 
 
@@ -115,7 +114,6 @@ lib/Arduino/WString.o \
 lib/SparkFun_BLEMate2/connections.o \
 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o \
 src/BackpackLED.o \
-src/blink_leds.o \
 src/main.o
 
 OBJS_AS_ARGS +=  \
@@ -149,7 +147,6 @@ lib/Arduino/WString.o \
 lib/SparkFun_BLEMate2/connections.o \
 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.o \
 src/BackpackLED.o \
-src/blink_leds.o \
 src/main.o
 
 C_DEPS +=  \
@@ -183,7 +180,6 @@ lib/Arduino/WString.d \
 lib/SparkFun_BLEMate2/connections.d \
 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.d \
 src/BackpackLED.d \
-src/blink_leds.d \
 src/main.d
 
 C_DEPS_AS_ARGS +=  \
@@ -217,7 +213,6 @@ lib/Arduino/WString.d \
 lib/SparkFun_BLEMate2/connections.d \
 lib/SparkFun_BLEMate2/SparkFun_BLEMate2.d \
 src/BackpackLED.d \
-src/blink_leds.d \
 src/main.d
 
 OUTPUT_FILE_PATH +=BackpackLED.elf
@@ -234,8 +229,6 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
-
-
 
 
 
@@ -345,13 +338,6 @@ lib/SparkFun_BLEMate2/%.o: ../lib/SparkFun_BLEMate2/%.cpp
 	@echo Building file: $<
 	@echo Invoking: AVR8/GNU C Compiler : 4.8.1
 	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-g++.exe$(QUOTE) -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L -D__AVR_ATmega2560__ -DARDUINO=10601 -DARDUINO_AVR_MEGA2560 -DARDUINO_ARCH_AVR  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -c -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
-	@echo Finished building: $<
-	
-
-src/%.o: ../src/%.c
-	@echo Building file: $<
-	@echo Invoking: AVR8/GNU C Compiler : 4.8.1
-	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.1061\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG -DF_CPU=16000000L -D__AVR_ATmega2560__ -DARDUINO=10601 -DARDUINO_AVR_MEGA2560 -DARDUINO_ARCH_AVR  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -mrelax -g2 -Wall -mmcu=atmega2560 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
 	@echo Finished building: $<
 	
 

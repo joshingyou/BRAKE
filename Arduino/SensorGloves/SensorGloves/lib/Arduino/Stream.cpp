@@ -265,7 +265,7 @@ int Stream::findMulti( struct Stream::MultiTarget *targets, int tCount) {
 
     for (struct MultiTarget *t = targets; t < targets+tCount; ++t) {
       // the simple case is if we match, deal with that first.
-      if (c == t->str[t->index])
+      if (c == (t->str[t->index]))
 	if (++t->index == t->len)
 	  return t - targets;
 	else

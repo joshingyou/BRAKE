@@ -111,9 +111,12 @@ void turn_off_top_arrow()
     top_arrow_is_on = false;
 }
 
-void blink_status_led()
+void turn_on_status_led()
 {
 
+    digitalWrite(11, HIGH);
+    status_led_is_on = true;
+    /*
     if ((!status_led_is_on) && (millis() - timer_status_led > 500)) {
         digitalWrite(11, HIGH);
         timer_status_led = millis();
@@ -123,7 +126,7 @@ void blink_status_led()
         digitalWrite(11, LOW);
         timer_status_led = millis();
         status_led_is_on = false;
-    }
+    }*/
       
 }
 

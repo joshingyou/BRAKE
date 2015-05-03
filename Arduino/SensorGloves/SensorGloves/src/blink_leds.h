@@ -20,7 +20,7 @@ void turn_off_right_arrow();
 void blink_top_arrow();
 void turn_off_top_arrow();
 
-void blink_status_led();
+void turn_on_status_led();
 void turn_off_status_led();
 
 #endif /* BLINK_LEDS_H_ */
